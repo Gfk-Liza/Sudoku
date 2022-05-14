@@ -104,7 +104,7 @@ namespace Sudoku
                 }
 
                 // 回帰
-                Board[,] retrunedBoard = SolveSudoku(nb).Clone() as Board[,];
+                Board[,] retrunedBoard = SolveSudoku(nb);
 
                 if (Program.IsFinConveni(retrunedBoard)) return retrunedBoard;
             }
