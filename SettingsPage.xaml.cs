@@ -1,6 +1,9 @@
 ﻿
 // SettingsPage.xaml.cs
 
+using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows.Controls;
 
 
@@ -44,6 +47,10 @@ namespace Sudoku
             this.ComboBox2.SelectedIndex = MainWindow.colorSetting2;
             this.ComboBox3.SelectedIndex = MainWindow.colorSetting3;
             this.ComboBox4.SelectedIndex = MainWindow.colorSetting4;
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            this.VersionInfoLabel.Content = $"バージョン: {fileVersionInfo.ProductVersion}";
         }
 
         private void OKButton_Click(object sender, System.Windows.RoutedEventArgs e)
