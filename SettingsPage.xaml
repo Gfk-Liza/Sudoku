@@ -1,0 +1,92 @@
+﻿<Page x:Class="Sudoku.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Height="248"
+      Width="341">
+
+    <Grid>
+        <ComboBox Name="DifficultyComboBox"
+                  HorizontalAlignment="Left"
+                  Margin="96,10,0,0"
+                  VerticalAlignment="Top"
+                  Width="175"
+                  Height="26"/>
+
+        <Button Name="OKButton"
+                Content="適用"
+                HorizontalAlignment="Left"
+                Margin="250,169,0,0"
+                VerticalAlignment="Top"
+                Click="OKButton_Click"
+                Height="25"
+                Width="63"/>
+
+        <ComboBox HorizontalAlignment="Left"
+                  Margin="5,71,0,0"
+                  VerticalAlignment="Top"
+                  Width="75"
+                  Name="ComboBox1"/>
+        <TextBlock HorizontalAlignment="Left"
+                   Margin="6,50,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.565,2.218">
+            <Run Language="ja-jp"
+                 Text="元の数字"/>
+        </TextBlock>
+
+        <ComboBox HorizontalAlignment="Left"
+                  Margin="85,71,0,0"
+                  VerticalAlignment="Top"
+                  Width="75"
+                  Name="ComboBox2"/>
+        <TextBlock HorizontalAlignment="Left"
+                Margin="85,50,0,0"
+                TextWrapping="Wrap"
+                VerticalAlignment="Top"
+                RenderTransformOrigin="0.565,2.218">
+                <Run Language="ja-jp"
+                     Text="記入する数字"/>
+        </TextBlock>
+
+        <ComboBox HorizontalAlignment="Left"
+                  Margin="165,71,0,0"
+                  VerticalAlignment="Top"
+                  Width="75"
+                  Name="ComboBox3"/>
+        <TextBlock HorizontalAlignment="Left"
+                   Margin="165,50,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.565,2.218">
+                   <Run Language="ja-jp"
+                        Text="回答の数字"/>
+        </TextBlock>
+
+        <ComboBox HorizontalAlignment="Left"
+                  Margin="245,71,0,0"
+                  VerticalAlignment="Top"
+                  Width="75"
+                  Name="ComboBox4"
+                  Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left"
+                   Margin="245,50,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.565,2.218">
+                   <Run Language="ja-jp"
+                        Text="選択の枠"/>
+        </TextBlock>
+
+        <Label Content="難易度"
+               HorizontalAlignment="Left"
+               Margin="27,11,0,0"
+               VerticalAlignment="Top"/>
+
+
+        <Label Content="バージョン: 2.1.0.0"
+               HorizontalAlignment="Left"
+               Margin="8,115,0,0"
+               VerticalAlignment="Top"/>
+    </Grid>
+</Page>
