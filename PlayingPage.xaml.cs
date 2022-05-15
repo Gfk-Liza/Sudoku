@@ -18,7 +18,6 @@ namespace Sudoku
     {
         private readonly DispatcherTimer timer = new DispatcherTimer();
 
-
         /// <summary>
         /// コントラクタ
         /// </summary>
@@ -45,47 +44,32 @@ namespace Sudoku
         /// </param>
         private void ShowBoard(Board[,] board)
         {
-            this.PeculiarText.Content = "";
-            this.NonSpecificText.Content = "";
-            this.AnswerText.Content = "";
-
-            this.PeculiarText.Foreground = MainWindow.colorList[MainWindow.colorSetting1];
-            this.NonSpecificText.Foreground = MainWindow.colorList[MainWindow.colorSetting2];
-            this.AnswerText.Foreground = MainWindow.colorList[MainWindow.colorSetting3];
+            Label[,] labels = new Label[9, 9]
+            {
+                { this.L00, this.L01, this.L02, this.L03, this.L04, this.L05, this.L06, this.L07, this.L08 },
+                { this.L10, this.L11, this.L12, this.L13, this.L14, this.L15, this.L16, this.L17, this.L18 },
+                { this.L20, this.L21, this.L22, this.L23, this.L24, this.L25, this.L26, this.L27, this.L28 },
+                { this.L30, this.L31, this.L32, this.L33, this.L34, this.L35, this.L36, this.L37, this.L38 },
+                { this.L40, this.L41, this.L42, this.L43, this.L44, this.L45, this.L46, this.L47, this.L48 },
+                { this.L50, this.L51, this.L52, this.L53, this.L54, this.L55, this.L56, this.L57, this.L58 },
+                { this.L60, this.L61, this.L62, this.L63, this.L64, this.L65, this.L66, this.L67, this.L68 },
+                { this.L70, this.L71, this.L72, this.L73, this.L74, this.L75, this.L76, this.L77, this.L78 },
+                { this.L80, this.L81, this.L82, this.L83, this.L84, this.L85, this.L86, this.L87, this.L88 }
+            };
 
             string[] converter = new string[10] { " ", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
-            for (sbyte i = 0; i < 9; i++)
+            
+            for (sbyte y = 0; y < 9; y++)
             {
-                for (sbyte j = 0; j < 9; j++)
+                for (sbyte x = 0; x < 9; x++)
                 {
-                    if (board[i, j].IsPeculiar)
-                    {
-                        this.PeculiarText.Content += converter[board[i, j].Number];
-                        this.NonSpecificText.Content += " ";
-                        this.AnswerText.Content += " ";
-                    }
-                    else if (board[i, j].IsAnswer)
-                    {
-                        this.PeculiarText.Content += " ";
-                        this.NonSpecificText.Content += " ";
-                        this.AnswerText.Content += converter[board[i, j].Number];
-                    }
-                    else
-                    {
-                        this.PeculiarText.Content += " ";
-                        this.NonSpecificText.Content += converter[board[i, j].Number];
-                        this.AnswerText.Content += " ";
-                    }
+                    labels[y, x].Content = converter[board[y, x].Number];
+                    labels[y, x].FontSize = 40;
 
-                    this.PeculiarText.Content += " ";
-                    this.NonSpecificText.Content += " ";
-                    this.AnswerText.Content += " ";
+                    if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
+                    else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
+                    else labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting2];
                 }
-
-                this.PeculiarText.Content += "\n";
-                this.NonSpecificText.Content += "\n";
-                this.AnswerText.Content += "\n";
             }
         }
 
@@ -96,6 +80,8 @@ namespace Sudoku
         /// </summary>
         private void Page_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            this.Grid_1.Focus();
+
             sbyte[] mouseXY = MouseClass.MouseXYConvert(Mouse.GetPosition(this));
 
             if (!IsOn.IsOnTheBoard(mouseXY) || (MainWindow.mainBoard[mouseXY[1], mouseXY[0]].IsPeculiar && MainWindow.mainBoard[mouseXY[1], mouseXY[0]].Number != 0))
@@ -127,7 +113,7 @@ namespace Sudoku
                 Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
                 Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9
             };
-            sbyte pressedKey = 0;
+            sbyte pressedKey = -1;
 
             for (sbyte i = 0; i < 20; i++)
             {
@@ -137,6 +123,8 @@ namespace Sudoku
                     break;
                 }
             }
+
+            if (pressedKey == -1) return;
 
             MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
 

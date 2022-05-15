@@ -41,12 +41,12 @@
                   Width="75"
                   Name="ComboBox2"/>
         <TextBlock HorizontalAlignment="Left"
-                Margin="85,50,0,0"
-                TextWrapping="Wrap"
-                VerticalAlignment="Top"
-                RenderTransformOrigin="0.565,2.218">
-                <Run Language="ja-jp"
-                     Text="記入する数字"/>
+                   Margin="85,50,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.565,2.218">
+                   <Run Language="ja-jp"
+                        Text="記入する数字"/>
         </TextBlock>
 
         <ComboBox HorizontalAlignment="Left"

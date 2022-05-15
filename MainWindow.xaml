@@ -8,8 +8,8 @@
                  Title="Sudoku"
                  GlowBrush="{DynamicResource AccentColorBrush}"
                  BorderThickness="1"
-                 Width="800"
-                 Height="700"
+                 Width="770"
+                 Height="680"
                  mc:Ignorable="d">
 
     <materialDesign:DialogHost Grid.ColumnSpan="2">
@@ -195,7 +195,7 @@
 
                 <Frame x:Name="frame"
                        NavigationUIVisibility="Hidden"
-                       Margin="10,60,0,0"/>
+                       Margin="10,60,10,10"/>
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

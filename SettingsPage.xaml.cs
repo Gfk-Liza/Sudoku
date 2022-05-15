@@ -15,11 +15,11 @@ namespace Sudoku
     public partial class SettingsPage : Page
     {
         private static readonly string[] indexes = new string[8] {
-            "とてもかんたん", "かんたん", "すこしかんたん", "ふつう",
-            "すこしむずかしい", "むずかしい", "とてもむずかしい", "鬼" };
+            "入門", "超初級", "初級", "中級",
+            "上級", "難問", "超難問", "鬼" };
 
         private static readonly string[] colorList = new string[10] {
-            "Black", "Gray", "Pink", "Red", "Orange", "Yellow", "YellowGreen", "Green", "Blue", "SkyBlue" };
+            "黒", "灰", "ピンク", "赤", "オレンジ", "黄", "黄緑", "緑", "青", "水" };
 
 
         /// <summary>

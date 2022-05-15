@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using SolidColorBrush = System.Windows.Media.SolidColorBrush;
@@ -28,6 +29,9 @@ namespace Sudoku
             NavigatePlayingPage();
             this.ClearAllButton.IsEnabled = false;
             this.ClearButton.IsEnabled = false;
+
+            NavigationCommands.BrowseBack.InputGestures.Clear();
+            NavigationCommands.BrowseForward.InputGestures.Clear();
         }
 
 
@@ -60,7 +64,7 @@ namespace Sudoku
         public static Board[,] mainBoard = NewBoard.MakeNewBoard(false);
 
         // あける穴の数（難易度別）
-        public static readonly sbyte[] difficultyList = new sbyte[8] { 30, 35, 40, 45, 50, 54, 58, 81 };
+        public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 50, 54, 58, 81 };
 
         // Main timer
         public static readonly Stopwatch watch = new Stopwatch();
@@ -81,6 +85,7 @@ namespace Sudoku
 
             }));
             this.MenuToggleButton.IsChecked = false;
+            isPlaying = true;
 
             thread.Start();
             thread.Join();
