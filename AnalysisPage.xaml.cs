@@ -32,7 +32,7 @@ namespace Sudoku
         /// </param>
         private void ShowBoard(Board[,] board)
         {
-            Label[,] labels = new Label[9, 9]
+            TextBlock[,] labels = new TextBlock[9, 9]
             {
                 { this.L00, this.L01, this.L02, this.L03, this.L04, this.L05, this.L06, this.L07, this.L08 },
                 { this.L10, this.L11, this.L12, this.L13, this.L14, this.L15, this.L16, this.L17, this.L18 },
@@ -51,7 +51,7 @@ namespace Sudoku
             {
                 for (sbyte x = 0; x < 9; x++)
                 {
-                    labels[y, x].Content = converter[board[y, x].Number];
+                    labels[y, x].Text = converter[board[y, x].Number];
                     labels[y, x].FontSize = 40;
 
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];

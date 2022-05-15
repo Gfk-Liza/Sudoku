@@ -56,7 +56,7 @@ namespace Sudoku
         // メモの数字の色
         public static sbyte colorSetting5 = 1;
 
-        // 入力時にルールに違反していたら、赤く表示する
+        // 入力時にルールに違反していたら、下線を引く
         public static bool checkSetting1 = false;
 
         // 色

@@ -85,12 +85,12 @@
 
         <Label Content=""
                HorizontalAlignment="Left"
-               Margin="8,115,0,0"
+               Margin="7,139,0,0"
                VerticalAlignment="Top"
                x:Name="VersionInfoLabel"
                FontSize="14"/>
-        
-        <CheckBox Content="入力時にルールに違反していたら、赤く表示する"
+
+        <CheckBox Content="入力時にルールに違反していたら、下線を引く"
                   HorizontalAlignment="Left"
                   Margin="6,113,0,0"
                   VerticalAlignment="Top"

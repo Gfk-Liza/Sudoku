@@ -60,7 +60,7 @@ namespace Sudoku
         /// </param>
         private void ShowBoard(Board[,] board)
         {
-            Label[,] labels = new Label[9, 9]
+            TextBlock[,] labels = new TextBlock[9, 9]
             {
                 { this.L00, this.L01, this.L02, this.L03, this.L04, this.L05, this.L06, this.L07, this.L08 },
                 { this.L10, this.L11, this.L12, this.L13, this.L14, this.L15, this.L16, this.L17, this.L18 },
@@ -82,21 +82,21 @@ namespace Sudoku
                     if (isMemo[y, x])
                     {
                         labels[y, x].FontSize = 15;
-                        if (Memo[y, x].Length > 4) labels[y, x].Content = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
-                        else labels[y, x].Content = Memo[y, x];
+                        if (Memo[y, x].Length > 4) labels[y, x].Text = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
+                        else labels[y, x].Text = Memo[y, x];
                         labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting5];
                         continue;
                     }
 
                     labels[y, x].FontSize = 40;
-                    labels[y, x].Content = converter[board[y, x].Number];
+                    labels[y, x].Text = converter[board[y, x].Number];
 
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
                     else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
                     else labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting2];
 
-                    if (!inPN[y, x]) labels[y, x].Background = MainWindow.colorList[3];
-                    else labels[y, x].Background = null;
+                    if (MainWindow.checkSetting1 && !inPN[y, x]) labels[y, x].TextDecorations = TextDecorations.Underline;
+                    else labels[y, x].TextDecorations = null;
                 }
             }
         }
