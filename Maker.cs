@@ -190,9 +190,9 @@ namespace Sudoku
 
                 // 回帰
                 Board[,] returnedBoard = MakeSudoku(nb);
-
                 if (IsFinConveni(returnedBoard)) return returnedBoard;
             }
+
 
             return map;
         }
