@@ -2,6 +2,7 @@
 // PlayingPage.xaml.cs
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +21,7 @@ namespace Sudoku
 
         private static bool[,] isMemo = new bool[9, 9];
         private static string[,] Memo = new string[9, 9];
+        private static bool[,] inPN = new bool[9, 9];
 
 
         /// <summary>
@@ -35,6 +37,7 @@ namespace Sudoku
                 {
                     isMemo[y, x] = false;
                     Memo[y, x] = "";
+                    inPN[y, x] = true;
                 }
             }
 
@@ -91,6 +94,9 @@ namespace Sudoku
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
                     else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
                     else labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting2];
+
+                    if (!inPN[y, x]) labels[y, x].Background = MainWindow.colorList[3];
+                    else labels[y, x].Background = null;
                 }
             }
         }
@@ -170,7 +176,14 @@ namespace Sudoku
                 if (outtemp.Length == 0) isMemo[MainWindow.SelectedY, MainWindow.SelectedX] = false;
                 else Memo[MainWindow.SelectedY, MainWindow.SelectedX] = outtemp;
             }
-            else MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
+            else
+            {
+                List<sbyte> pn = Program.PlaceableNumbers(MainWindow.mainBoard, MainWindow.SelectedX, MainWindow.SelectedY);
+                inPN[MainWindow.SelectedY, MainWindow.SelectedX] = pn.Contains((sbyte)(pressedKey % 10));
+                if (pressedKey == 0) inPN[MainWindow.SelectedY, MainWindow.SelectedX] = true;
+
+                MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
+            }
 
             ShowBoard(MainWindow.mainBoard);
 

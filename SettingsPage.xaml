@@ -75,7 +75,7 @@
                   Width="75"
                   Name="ComboBox5"/>
         <TextBlock HorizontalAlignment="Left"
-                   Margin="335,49,0,0"
+                   Margin="335,50,0,0"
                    TextWrapping="Wrap"
                    VerticalAlignment="Top"
                    RenderTransformOrigin="0.565,2.218">
@@ -89,5 +89,11 @@
                VerticalAlignment="Top"
                x:Name="VersionInfoLabel"
                FontSize="14"/>
+        
+        <CheckBox Content="入力時にルールに違反していたら、赤く表示する"
+                  HorizontalAlignment="Left"
+                  Margin="6,113,0,0"
+                  VerticalAlignment="Top"
+                  x:Name="CheackBox1"/>
     </Grid>
 </Page>

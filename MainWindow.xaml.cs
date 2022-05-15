@@ -56,6 +56,9 @@ namespace Sudoku
         // メモの数字の色
         public static sbyte colorSetting5 = 1;
 
+        // 入力時にルールに違反していたら、赤く表示する
+        public static bool checkSetting1 = false;
+
         // 色
         public static readonly SolidColorBrush[] colorList = new SolidColorBrush[10] {
             Brushes.Black, Brushes.Gray, Brushes.Pink, Brushes.Red, Brushes.Orange,

@@ -40,6 +40,8 @@ namespace Sudoku
             this.ComboBox4.SelectedIndex = MainWindow.colorSetting4;
             this.ComboBox5.SelectedIndex = MainWindow.colorSetting5;
 
+            this.CheackBox1.IsChecked = MainWindow.checkSetting1;
+
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             this.VersionInfoLabel.Content = $"バージョン: {fileVersionInfo.ProductVersion}";
@@ -55,6 +57,8 @@ namespace Sudoku
             MainWindow.colorSetting3 = (sbyte)this.ComboBox3.SelectedIndex;
             MainWindow.colorSetting4 = (sbyte)this.ComboBox4.SelectedIndex;
             MainWindow.colorSetting5 = (sbyte)this.ComboBox5.SelectedIndex;
+
+            MainWindow.checkSetting1 = (bool)this.CheackBox1.IsChecked;
         }
     }
 }
