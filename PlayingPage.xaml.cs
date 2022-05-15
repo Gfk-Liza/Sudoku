@@ -82,7 +82,7 @@ namespace Sudoku
                     if (isMemo[y, x])
                     {
                         labels[y, x].FontSize = 15;
-                        if (Memo[y, x].Length > 4) labels[y, x].Text = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
+                        if (Memo[y, x].Length > 5) labels[y, x].Text = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
                         else labels[y, x].Text = Memo[y, x];
                         labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting5];
                         continue;
