@@ -14,10 +14,6 @@ namespace Sudoku
     /// </summary>
     public partial class SettingsPage : Page
     {
-        private static readonly string[] indexes = new string[8] {
-            "入門", "超初級", "初級", "中級",
-            "上級", "難問", "超難問", "鬼" };
-
         private static readonly string[] colorList = new string[10] {
             "黒", "灰", "ピンク", "赤", "オレンジ", "黄", "黄緑", "緑", "青", "水" };
 
@@ -28,12 +24,6 @@ namespace Sudoku
         public SettingsPage()
         {
             InitializeComponent();
-
-            foreach (string index in indexes)
-            {
-                this.DifficultyComboBox.Items.Add(index);
-            }
-            this.DifficultyComboBox.SelectedIndex = MainWindow.difficulty;
 
             foreach (string color in colorList)
             {
@@ -53,10 +43,11 @@ namespace Sudoku
             this.VersionInfoLabel.Content = $"バージョン: {fileVersionInfo.ProductVersion}";
         }
 
+        /// <summary>
+        /// 適用ボタンが押されたときの処理
+        /// </summary>
         private void OKButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MainWindow.difficulty = (sbyte)this.DifficultyComboBox.SelectedIndex;
-            
             MainWindow.colorSetting1 = (sbyte)this.ComboBox1.SelectedIndex;
             MainWindow.colorSetting2 = (sbyte)this.ComboBox2.SelectedIndex;
             MainWindow.colorSetting3 = (sbyte)this.ComboBox3.SelectedIndex;

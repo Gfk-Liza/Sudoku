@@ -1,0 +1,18 @@
+﻿<Page x:Class="Sudoku.ChooseDifficultyPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ChooseDifficultyPage">
+
+    <Grid>
+        <StackPanel>
+            <Button Content="入門" Click="Lv1"/>
+            <Button Content="超初級" Margin="0,10,0,0" Click="Lv2"/>
+            <Button Content="初級" Margin="0,10,0,0" Click="Lv3"/>
+            <Button Content="中級" Margin="0,10,0,0" Click="Lv4"/>
+            <Button Content="上級" Margin="0,10,0,0" Click="Lv5"/>
+            <Button Content="難問" Margin="0,10,0,0" Click="Lv6"/>
+            <Button Content="超難問" Margin="0,10,0,0" Click="Lv7"/>
+            <Button Content="鬼" Margin="0,10,0,0" Click="Lv8"/>
+        </StackPanel>
+    </Grid>
+</Page>

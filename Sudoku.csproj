@@ -113,6 +113,9 @@
       <DependentUpon>AnalysisPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="CanBeSloved.cs" />
+    <Compile Include="ChooseDifficultyPage.xaml.cs">
+      <DependentUpon>ChooseDifficultyPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CountDownPage.xaml.cs">
       <DependentUpon>CountDownPage.xaml</DependentUpon>
     </Compile>
@@ -128,6 +131,10 @@
     </Compile>
     <Compile Include="Solver.cs" />
     <Page Include="AnalysisPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChooseDifficultyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

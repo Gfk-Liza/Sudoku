@@ -5,13 +5,6 @@
       Width="341">
 
     <Grid>
-        <ComboBox Name="DifficultyComboBox"
-                  HorizontalAlignment="Left"
-                  Margin="96,10,0,0"
-                  VerticalAlignment="Top"
-                  Width="175"
-                  Height="26"/>
-
         <Button Name="OKButton"
                 Content="適用"
                 HorizontalAlignment="Left"
@@ -77,12 +70,6 @@
                    <Run Language="ja-jp"
                         Text="選択の枠"/>
         </TextBlock>
-
-        <Label Content="難易度"
-               HorizontalAlignment="Left"
-               Margin="27,11,0,0"
-               VerticalAlignment="Top"/>
-
 
         <Label Content=""
                HorizontalAlignment="Left"

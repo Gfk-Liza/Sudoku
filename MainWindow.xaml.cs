@@ -39,7 +39,7 @@ namespace Sudoku
         public static bool isPlaying = false;
 
         // 難易度
-        public static sbyte difficulty = 3;
+        public static sbyte difficulty = -1;
         // 選択されている X 座標
         public static sbyte SelectedX = -1;
         // 選択されている Y 座標
@@ -70,7 +70,10 @@ namespace Sudoku
         public static readonly Stopwatch watch = new Stopwatch();
 
         // カウントダウン復帰用のタイマー
-        private static readonly DispatcherTimer timer = new DispatcherTimer();
+        private readonly DispatcherTimer timer = new DispatcherTimer();
+
+        // カウントダウン復帰用のタイマー
+        private readonly DispatcherTimer timer2 = new DispatcherTimer();
 
 
         /// <summary>
@@ -79,30 +82,40 @@ namespace Sudoku
         /// </summary>
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            Thread thread = new Thread(new ThreadStart(() =>
-            {
-                mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]);
-
-            }));
+            difficulty = -1;
             this.MenuToggleButton.IsChecked = false;
-            isPlaying = true;
+            this.frame.Navigate(new ChooseDifficultyPage(), this);
 
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            timer2.Tick += new EventHandler(TimerMethod1);
+            timer2.Start();
+        }
+
+        /// <summary>
+        /// 0.05秒ごとに呼ばれるメソッド
+        /// </summary>
+        private void TimerMethod1(object sender, EventArgs e)
+        {
+            if (difficulty == -1) return;
+
+            timer2.Stop();
+            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
             thread.Start();
             thread.Join();
-
+            
             this.frame.Navigate(new CountDownPage(), this);
-
             timer.Interval = new TimeSpan(0, 0, 0, 3, 0);
-            timer.Tick += new EventHandler(TimerMethod);
-            timer.Start();
+            timer.Tick += new EventHandler(TimerMethod2);
+            timer.Start();difficulty = -1;
         }
 
         /// <summary>
         /// 3秒後に呼ばれるメソッド
         /// </summary>
-        private void TimerMethod(object sender, EventArgs e)
+        private void TimerMethod2(object sender, EventArgs e)
         {
             timer.Stop();
+            isPlaying = true;
 
             watch.Restart();
             NavigatePlayingPage();
@@ -135,18 +148,28 @@ namespace Sudoku
         /// </summary>
         private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
         {
+            difficulty = -1;
             this.MenuToggleButton.IsChecked = false;
+            this.frame.Navigate(new ChooseDifficultyPage(), this);
+
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            timer2.Tick += new EventHandler(TimerMethod3);
+            timer2.Start();
+        }
+
+        /// <summary>
+        /// 0.05秒ごとに呼ばれるメソッド
+        /// </summary>
+        private void TimerMethod3(object sender, EventArgs e)
+        {
+            if (difficulty == -1) return;
+
             watch.Stop();
 
-            Thread thread = new Thread(new ThreadStart(() =>
-            {
-                mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]);
-
-            }));
-
+            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
             thread.Start();
             thread.Join();
-            
+
             NavigatePlayingPage();
         }
 
