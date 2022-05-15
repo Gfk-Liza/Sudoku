@@ -53,6 +53,8 @@ namespace Sudoku
         public static sbyte colorSetting3 = 3;
         // 選択枠の色の設定
         public static sbyte colorSetting4 = 5;
+        // メモの数字の色
+        public static sbyte colorSetting5 = 1;
 
         // 色
         public static readonly SolidColorBrush[] colorList = new SolidColorBrush[10] {
@@ -106,7 +108,9 @@ namespace Sudoku
             this.frame.Navigate(new CountDownPage(), this);
             timer.Interval = new TimeSpan(0, 0, 0, 3, 0);
             timer.Tick += new EventHandler(TimerMethod2);
-            timer.Start();difficulty = -1;
+            timer.Start();
+            
+            difficulty = -1;
         }
 
         /// <summary>

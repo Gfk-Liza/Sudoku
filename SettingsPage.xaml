@@ -1,10 +1,8 @@
 ﻿<Page x:Class="Sudoku.SettingsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Height="248"
-      Width="341">
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid>
+    <Grid HorizontalAlignment="Left" Width="539">
         <Button Name="OKButton"
                 Content="適用"
                 HorizontalAlignment="Left"
@@ -69,6 +67,20 @@
                    RenderTransformOrigin="0.565,2.218">
                    <Run Language="ja-jp"
                         Text="選択の枠"/>
+        </TextBlock>
+
+        <ComboBox HorizontalAlignment="Left"
+                  Margin="329,71,0,0"
+                  VerticalAlignment="Top"
+                  Width="75"
+                  Name="ComboBox5"/>
+        <TextBlock HorizontalAlignment="Left"
+                   Margin="335,49,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   RenderTransformOrigin="0.565,2.218">
+                   <Run Language="ja-jp"
+                        Text="メモの数字"/>
         </TextBlock>
 
         <Label Content=""

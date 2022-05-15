@@ -31,12 +31,14 @@ namespace Sudoku
                 this.ComboBox2.Items.Add(color);
                 this.ComboBox3.Items.Add(color);
                 this.ComboBox4.Items.Add(color);
+                this.ComboBox5.Items.Add(color);
             }
 
             this.ComboBox1.SelectedIndex = MainWindow.colorSetting1;
             this.ComboBox2.SelectedIndex = MainWindow.colorSetting2;
             this.ComboBox3.SelectedIndex = MainWindow.colorSetting3;
             this.ComboBox4.SelectedIndex = MainWindow.colorSetting4;
+            this.ComboBox5.SelectedIndex = MainWindow.colorSetting5;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -52,6 +54,7 @@ namespace Sudoku
             MainWindow.colorSetting2 = (sbyte)this.ComboBox2.SelectedIndex;
             MainWindow.colorSetting3 = (sbyte)this.ComboBox3.SelectedIndex;
             MainWindow.colorSetting4 = (sbyte)this.ComboBox4.SelectedIndex;
+            MainWindow.colorSetting5 = (sbyte)this.ComboBox5.SelectedIndex;
         }
     }
 }

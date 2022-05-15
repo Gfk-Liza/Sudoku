@@ -18,12 +18,25 @@ namespace Sudoku
     {
         private readonly DispatcherTimer timer = new DispatcherTimer();
 
+        private static bool[,] isMemo = new bool[9, 9];
+        private static string[,] Memo = new string[9, 9];
+
+
         /// <summary>
         /// コントラクタ
         /// </summary>
         public PlayingPage(Board[,] _board)
         {
             InitializeComponent();
+
+            for (sbyte y = 0; y < 9; y++)
+            {
+                for (sbyte x = 0; x < 9; x++)
+                {
+                    isMemo[y, x] = false;
+                    Memo[y, x] = "";
+                }
+            }
 
             this.Grid_1.Focus();
 
@@ -63,8 +76,17 @@ namespace Sudoku
             {
                 for (sbyte x = 0; x < 9; x++)
                 {
-                    labels[y, x].Content = converter[board[y, x].Number];
+                    if (isMemo[y, x])
+                    {
+                        labels[y, x].FontSize = 15;
+                        if (Memo[y, x].Length > 4) labels[y, x].Content = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
+                        else labels[y, x].Content = Memo[y, x];
+                        labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting5];
+                        continue;
+                    }
+
                     labels[y, x].FontSize = 40;
+                    labels[y, x].Content = converter[board[y, x].Number];
 
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
                     else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
@@ -108,6 +130,14 @@ namespace Sudoku
         {
             if (!IsOn.IsOnTheBoard(MainWindow.SelectedX, MainWindow.SelectedY)) return;
 
+            if (e.Key == Key.Subtract)
+            {
+                isMemo[MainWindow.SelectedY, MainWindow.SelectedX] = true;
+                MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = 0;
+                ShowBoard(MainWindow.mainBoard);
+                return;
+            }
+
             Key[] keyesList = new Key[20] {
                 Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
                 Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
@@ -126,7 +156,21 @@ namespace Sudoku
 
             if (pressedKey == -1) return;
 
-            MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
+            if (isMemo[MainWindow.SelectedY, MainWindow.SelectedX])
+            {
+                string temp = Memo[MainWindow.SelectedY, MainWindow.SelectedX];
+                string t = (pressedKey % 10).ToString();
+                string outtemp = "";
+                for (sbyte i = 1; i < 10; i++)
+                {
+                    if (temp.Contains(i.ToString()) && t != i.ToString()) outtemp += i.ToString();
+                    else if (t == i.ToString() && !temp.Contains(i.ToString())) outtemp += t;
+                }
+
+                if (outtemp.Length == 0) isMemo[MainWindow.SelectedY, MainWindow.SelectedX] = false;
+                else Memo[MainWindow.SelectedY, MainWindow.SelectedX] = outtemp;
+            }
+            else MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
 
             ShowBoard(MainWindow.mainBoard);
 
