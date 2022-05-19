@@ -8,25 +8,30 @@
       Height="610">
 
     <Grid>
-        <Frame x:Name="DifficultyFrame"
-               NavigationUIVisibility="Hidden"
-               Navigating="Frame_Navigating"/>
+        <Slider Maximum="7"
+                Minimum="0"
+                Margin="20,30,20,550"
+                SmallChange="1"
+                LargeChange="1"
+                IsSnapToTickEnabled="True"
+                TickFrequency="1"
+                TickPlacement="BottomRight"
+                ValueChanged="DifficlutySlider_ValueChanged"
+                x:Name="DifficlutySlider"/>
 
+        <Button Content="Start"
+                HorizontalAlignment="Left"
+                Margin="630,540,0,0"
+                VerticalAlignment="Top"
+                x:Name="StartButton"
+                Click="StartButton_Click"/>
 
-        <Button HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                x:Name="BeforeButton" Click="BeforeButton_Click">
-            <DockPanel>
-                <materialDesign:PackIcon Kind="NavigateBefore"/>
-            </DockPanel>
-        </Button>
-        
-        <Button HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                x:Name="NextButton">
-            <DockPanel>
-                <materialDesign:PackIcon Kind="NavigateNext"/>
-            </DockPanel>
-        </Button>
+        <Label Content=""
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Height="445"
+               Width="675"
+               x:Name="ExplanationLabel"
+               FontSize="24"/>
     </Grid>
 </Page>

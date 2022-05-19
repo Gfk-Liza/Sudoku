@@ -1,13 +1,8 @@
 ﻿
 // ChooseDifficultyPage.xaml.cs
 
-using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 
 namespace Sudoku
@@ -18,15 +13,19 @@ namespace Sudoku
     public partial class ChooseDifficultyPage : Page
     {
         private static sbyte difficultyTemp = 0;
-        private static sbyte MAX_DIFFICULTY = (sbyte)MainWindow.difficultyList.Length;
 
-        /// <summary>
-        /// 直近の遷移の方向
-        /// 0: null
-        /// 1: ←
-        /// 2: →
-        /// </summary>
-        private static sbyte mostRecentActivity = 0;
+        // 各レベルごとの説明
+        private static readonly string[] EXPLANATION = new string[8]
+        {
+            $"入門レベル\n{MainWindow.difficultyList[0]}個程の穴が空いています。\n数独を始めたばかりの人にオススメです。",
+            $"超初級レベル\n{MainWindow.difficultyList[1]}個程の穴が空いています。\nある程度慣れた人は、瞬殺。",
+            $"初級レベル\n{MainWindow.difficultyList[2]}個程の穴が空いています。\n仮定法を取得中の方へ。",
+            $"中級レベル\n{MainWindow.difficultyList[3]}個程の穴が空いています。\n数独についてある程度基礎の解き方が分かっている人にオススメです。",
+            $"上級レベル\n{MainWindow.difficultyList[4]}個程の穴が空いています。\n数独について慣れたら。",
+            $"難問レベル\n{MainWindow.difficultyList[5]}個程の穴が空いています。\n時間をかければできるかも。",
+            $"超難問レベル\n{MainWindow.difficultyList[6]}個程の穴が空いています。\nできたら、超すごい。",
+            $"鬼レベル\n可能な限り穴が空いています。\nプロか天才。",
+        };
 
         /// <summary>
         /// コントラクタ
@@ -37,79 +36,27 @@ namespace Sudoku
             MainWindow.difficulty = -1;
 
             InitializeComponent();
+
+            this.DifficlutySlider.Value = difficultyTemp;
+            this.DifficlutySlider.Maximum = MainWindow.difficultyList.Length - 1;
+            this.ExplanationLabel.Content = EXPLANATION[difficultyTemp];
         }
-
-
-        private void BeforeButton_Click(object sender, RoutedEventArgs e)
+        
+        /// <summary>
+        /// 難易度選択バーの値が変更された時
+        /// </summary>
+        private void DifficlutySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            difficultyTemp = DifficultyMod((sbyte)(difficultyTemp - 1));
-            mostRecentActivity = 1;
+            difficultyTemp = (sbyte)DifficlutySlider.Value;
+            this.ExplanationLabel.Content = EXPLANATION[difficultyTemp];
         }
-
 
         /// <summary>
-        /// 難易度(difficulty)を難易度の量(MAX_DIFFICULTY)で割った余りを返す
+        /// StartButtonがクリックされた時
         /// </summary>
-        /// 
-        /// <param name="_difficulty">
-        /// 処理前の難易度値
-        /// </param>
-        /// 
-        /// <returns>
-        /// 難易度を難易度の量で割った余り
-        /// </returns>
-        private sbyte DifficultyMod(sbyte _difficulty)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            return (sbyte)(_difficulty % MAX_DIFFICULTY);
-        }
-
-        private bool _allowDirectNavigation = false;
-        private NavigatingCancelEventArgs _navArgs = null;
-        private void Frame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            if (this.DifficultyFrame.Content != null && !_allowDirectNavigation)
-            {
-                e.Cancel = true;
-                _navArgs = e;
-
-                // 遷移前のページを画像に変換しイメージに設定
-                Frame visual = this.DifficultyFrame;
-                Rect bounds = VisualTreeHelper.GetDescendantBounds(visual);
-                RenderTargetBitmap bitmap = new RenderTargetBitmap(
-                    (int)bounds.Width,
-                    (int)bounds.Height,
-                    96.0,
-                    96.0,
-                    PixelFormats.Pbgra32);
-                DrawingVisual dv = new DrawingVisual();
-                using (var dc = dv.RenderOpen())
-                {
-                    VisualBrush vb = new VisualBrush(visual);
-                    dc.DrawRectangle(vb, null, bounds);
-                }
-                bitmap.Render(dv);
-                bitmap.Freeze();
-
-                // フレームに遷移先のページを設定
-                _allowDirectNavigation = true;
-                this.DifficultyFrame.Navigate(_navArgs.Content);
-
-                // フレームを右(又は左)からスライドさせるアニメーション
-                ThicknessAnimation animation0 = new ThicknessAnimation();
-                if (mostRecentActivity == 1) animation0.From = new Thickness(this.DifficultyFrame.ActualWidth, 60, -1 * this.DifficultyFrame.ActualWidth, 0);
-                else animation0.From = new Thickness(-1 * this.DifficultyFrame.ActualWidth, 60, this.DifficultyFrame.ActualWidth, 0);
-                animation0.To = new Thickness(10, 60, 10, 10);
-                animation0.Duration = TimeSpan.FromMilliseconds(MainWindow.ANIMATION_TIME_SPAN);
-                this.DifficultyFrame.BeginAnimation(MarginProperty, animation0);
-
-                // 遷移前ページを画像可した要素を左(又は右)にスライドするアニメーション
-                ThicknessAnimation animation1 = new ThicknessAnimation { From = new Thickness(10, 60, 10, 10) };
-                if (mostRecentActivity == 1) animation1.To = new Thickness(-1 * this.DifficultyFrame.ActualWidth, 60, this.DifficultyFrame.ActualWidth, 0);
-                else animation1.To = new Thickness(this.DifficultyFrame.ActualWidth, 60, -1 * this.DifficultyFrame.ActualWidth, 0);
-                animation1.Duration = TimeSpan.FromMilliseconds(MainWindow.ANIMATION_TIME_SPAN);
-            }
-
-            _allowDirectNavigation = false;
+            MainWindow.difficulty = difficultyTemp;
         }
     }
 }

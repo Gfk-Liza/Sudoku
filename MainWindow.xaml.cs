@@ -43,7 +43,7 @@ namespace Sudoku
         public static bool isPlaying = false;
 
         // 難易度
-        public static sbyte difficulty = -1;
+        public static sbyte difficulty = 3;
         // 選択されている X 座標
         public static sbyte SelectedX = -1;
         // 選択されている Y 座標
@@ -73,7 +73,7 @@ namespace Sudoku
         public static Board[,] mainBoard = NewBoard.MakeNewBoard(false);
 
         // あける穴の数（難易度別）
-        public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 50, 54, 58, 81 };
+        public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 46, 50, 54, 81 };
 
         // Main timer
         public static readonly Stopwatch watch = new Stopwatch();
@@ -99,7 +99,6 @@ namespace Sudoku
         /// </summary>
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            difficulty = -1;
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
@@ -177,7 +176,6 @@ namespace Sudoku
         /// </summary>
         private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
         {
-            difficulty = -1;
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
