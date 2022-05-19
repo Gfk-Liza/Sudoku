@@ -195,7 +195,8 @@
 
                 <Frame x:Name="frame"
                        NavigationUIVisibility="Hidden"
-                       Margin="10,60,10,10"/>
+                       Margin="10,60,10,10"
+                       Navigating="Frame_Navigating"/>
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

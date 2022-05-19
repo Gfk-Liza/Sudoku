@@ -11,9 +11,9 @@ namespace Sudoku
     /// </summary>
     public static class MouseClass
     {
-        private const sbyte minX = 0;
-        private const sbyte minY = 0;
-        private const sbyte troutSize = 60;
+        private const sbyte MIN_X = 0;
+        private const sbyte MIN_Y = 0;
+        private const sbyte TROUT_SIZE = 60;
 
 
         /// <summary>
@@ -29,11 +29,11 @@ namespace Sudoku
         /// </returns>
         public static sbyte[] MouseXYConvert(Point point)
         {
-            sbyte xC = (sbyte)((point.X - minX) / troutSize);
-            sbyte yC = (sbyte)((point.Y - minY) / troutSize);
+            sbyte xC = (sbyte)((point.X - MIN_X) / TROUT_SIZE);
+            sbyte yC = (sbyte)((point.Y - MIN_Y) / TROUT_SIZE);
 
-            if (point.X < minX) xC = -1;
-            if (point.Y < minY) yC = -1;
+            if (point.X < MIN_X) xC = -1;
+            if (point.Y < MIN_Y) yC = -1;
 
             return new sbyte[2] { xC, yC };
         }

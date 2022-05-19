@@ -6,8 +6,12 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using SolidColorBrush = System.Windows.Media.SolidColorBrush;
 
@@ -53,7 +57,7 @@ namespace Sudoku
         public static sbyte colorSetting3 = 3;
         // 選択枠の色の設定
         public static sbyte colorSetting4 = 5;
-        // メモの数字の色
+        // メモの数字の色の設定
         public static sbyte colorSetting5 = 1;
 
         // 入力時にルールに違反していたら、下線を引く
@@ -81,6 +85,14 @@ namespace Sudoku
         private readonly DispatcherTimer timer2 = new DispatcherTimer();
 
 
+        // レベル選択画面のボタンの更新速度(ミリ秒)
+        private const sbyte UPDATE_RATE = 50;
+
+        // 画面遷移時の速度(ミリ秒)
+        public const int ANIMATION_TIME_SPAN = 200;
+
+
+
         /// <summary>
         /// ゲームを始める
         /// タイムアタックボタンが押されたときの処理
@@ -91,7 +103,7 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, UPDATE_RATE);
             timer2.Tick += new EventHandler(TimerMethod1);
             timer2.Start();
         }
@@ -104,9 +116,8 @@ namespace Sudoku
             if (difficulty == -1) return;
 
             timer2.Stop();
-            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
-            thread.Start();
-            thread.Join();
+
+            MakeNewSudoku();
             
             this.frame.Navigate(new CountDownPage(), this);
             timer.Interval = new TimeSpan(0, 0, 0, 3, 0);
@@ -126,6 +137,17 @@ namespace Sudoku
 
             watch.Restart();
             NavigatePlayingPage();
+        }
+
+
+        /// <summary>
+        /// 迷路を生成する関数
+        /// </summary>
+        private void MakeNewSudoku()
+        {
+            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
+            thread.Start();
+            thread.Join();
         }
 
 
@@ -159,7 +181,7 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, UPDATE_RATE);
             timer2.Tick += new EventHandler(TimerMethod3);
             timer2.Start();
         }
@@ -171,12 +193,9 @@ namespace Sudoku
         {
             if (difficulty == -1) return;
 
-            watch.Stop();
-
-            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
-            thread.Start();
-            thread.Join();
-
+            timer2.Stop();
+            MakeNewSudoku();
+            watch.Restart();
             NavigatePlayingPage();
         }
 
@@ -274,6 +293,54 @@ namespace Sudoku
             this.frame.Navigate(new PlayingPage(mainBoard), this);
             this.ClearAllButton.IsEnabled = true;
             this.ClearButton.IsEnabled = true;
+        }
+
+        private bool _allowDirectNavigation = false;
+        private NavigatingCancelEventArgs _navArgs = null;
+        private void Frame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            if (frame.Content != null && !_allowDirectNavigation)
+            {
+                e.Cancel = true;
+                _navArgs = e;
+
+                // 遷移前のページを画像に変換しイメージに設定
+                Frame visual = this.frame;
+                Rect bounds = VisualTreeHelper.GetDescendantBounds(visual);
+                RenderTargetBitmap bitmap = new RenderTargetBitmap(
+                    (int)bounds.Width,
+                    (int)bounds.Height,
+                    96.0,
+                    96.0,
+                    PixelFormats.Pbgra32);
+                DrawingVisual dv = new DrawingVisual();
+                using (var dc = dv.RenderOpen())
+                {
+                    VisualBrush vb = new VisualBrush(visual);
+                    dc.DrawRectangle(vb, null, bounds);
+                }
+                bitmap.Render(dv);
+                bitmap.Freeze();
+
+                // フレームに遷移先のページを設定
+                _allowDirectNavigation = true;
+                this.frame.Navigate(_navArgs.Content);
+
+                // フレームを右からスライドさせるアニメーション
+                ThicknessAnimation animation0 = new ThicknessAnimation();
+                animation0.From = new Thickness(this.frame.ActualWidth, 60, -1 * this.frame.ActualWidth, 0);
+                animation0.To = new Thickness(10, 60, 10, 10);
+                animation0.Duration = TimeSpan.FromMilliseconds(ANIMATION_TIME_SPAN);
+                this.frame.BeginAnimation(MarginProperty, animation0);
+
+                // 遷移前ページを画像可した要素を左にスライドするアニメーション
+                ThicknessAnimation animation1 = new ThicknessAnimation();
+                animation1.From = new Thickness(10, 60, 10, 10);
+                animation1.To = new Thickness(-1 * this.frame.ActualWidth, 60, this.frame.ActualWidth, 0);
+                animation1.Duration = TimeSpan.FromMilliseconds(ANIMATION_TIME_SPAN);
+            }
+
+            _allowDirectNavigation = false;
         }
     }
 }
