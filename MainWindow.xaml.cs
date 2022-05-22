@@ -47,16 +47,13 @@ namespace Sudoku
         // Main timer
         public static readonly Stopwatch watch = new Stopwatch();
 
-        // カウントダウン復帰用のタイマー
-        private readonly DispatcherTimer timer = new DispatcherTimer();
-
-        // カウントダウン復帰用のタイマー
+        // タイマー
+        private readonly DispatcherTimer timer1 = new DispatcherTimer();
         private readonly DispatcherTimer timer2 = new DispatcherTimer();
-
-        private readonly DispatcherTimer timer3 = new DispatcherTimer();
 
         private readonly Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(difficultyList[Values.Difficulty]); }));
 
+        private static bool isTimeAttack = false;
 
 
         /// <summary>
@@ -65,31 +62,44 @@ namespace Sudoku
         /// </summary>
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            this.MenuToggleButton.IsChecked = false;
-            this.frame.Navigate(new ChooseDifficultyPage(), this);
+            MenuButton_Uncheck();
+            NavigateChooseDifficultyPage();
 
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer2.Tick += new EventHandler(TimerMethod1);
-            timer2.Start();
+            isTimeAttack = true;
+
+            timer1.Stop();
+            timer1.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+            timer1.Tick += new EventHandler(TimerMethod1);
+            timer1.Start();
         }
 
         /// <summary>
-        /// 0.05秒ごとに呼ばれるメソッド
+        /// 新規生成する
+        /// </summary>
+        private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
+        {
+            MenuButton_Uncheck();
+            NavigateChooseDifficultyPage();
+
+            isTimeAttack = false;
+
+            timer1.Stop();
+            timer1.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+            timer1.Tick += new EventHandler(TimerMethod3);
+            timer1.Start();
+        }
+
+
+        /// <summary>
+        /// BeginButton_Click >> timer2
         /// </summary>
         private void TimerMethod1(object sender, EventArgs e)
         {
             if (Values.Difficulty == -1) return;
 
-            timer2.Stop();
+            timer1.Stop();
 
             MakeNewSudoku();
-            
-            this.frame.Navigate(new CountDownPage(), this);
-            timer.Interval = new TimeSpan(0, 0, 0, 3, 0);
-            timer.Tick += new EventHandler(TimerMethod2);
-            timer.Start();
-
-            Values.Difficulty = -1;
         }
 
         /// <summary>
@@ -97,7 +107,7 @@ namespace Sudoku
         /// </summary>
         private void TimerMethod2(object sender, EventArgs e)
         {
-            timer.Stop();
+            timer1.Stop();
             Values.IsPlaying = true;
 
             watch.Restart();
@@ -110,14 +120,13 @@ namespace Sudoku
         /// </summary>
         private void MakeNewSudoku()
         {
-            timer3.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer3.Tick += new EventHandler(TimerMethod4);
-            timer3.Start();
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+            timer2.Tick += new EventHandler(TimerMethod4);
+            timer2.Start();
 
             NavigateMakingPage();
 
             thread.Start();
-            
         }
 
         /// <summary>
@@ -127,8 +136,18 @@ namespace Sudoku
         {
             if (thread.ThreadState == System.Threading.ThreadState.Running) return;
 
-            timer3.Stop();
+            timer2.Stop();
             NavigatePlayingPage();
+
+            if (isTimeAttack)
+            {
+                this.frame.Navigate(new CountDownPage(), this);
+                timer1.Interval = new TimeSpan(0, 0, 0, 3, 0);
+                timer1.Tick += new EventHandler(TimerMethod2);
+                timer1.Start();
+            }
+
+            isTimeAttack = false;
         }
 
 
@@ -146,23 +165,10 @@ namespace Sudoku
         /// </summary>
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            this.MenuToggleButton.IsChecked = false;
+            MenuButton_Uncheck();
             this.frame.Navigate(new SettingsPage(), this);
 
             ClearBTNsEnabled(false);
-        }
-
-        /// <summary>
-        /// 新規生成する
-        /// </summary>
-        private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.MenuToggleButton.IsChecked = false;
-            this.frame.Navigate(new ChooseDifficultyPage(), this);
-
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer2.Tick += new EventHandler(TimerMethod3);
-            timer2.Start();
         }
 
         /// <summary>
@@ -173,7 +179,7 @@ namespace Sudoku
             // 値が変更されていないなら関数をぬける
             if (Values.Difficulty == -1) return;
 
-            timer2.Stop();
+            timer1.Stop();
             MakeNewSudoku();
             watch.Restart();
         }
@@ -187,7 +193,7 @@ namespace Sudoku
             watch.Stop();
             Values.IsPlaying = false;
 
-            this.MenuToggleButton.IsChecked = false;
+            MenuButton_Uncheck();
 
             NavigateAnalysisPage();
 
@@ -205,7 +211,7 @@ namespace Sudoku
 
             MainBoard = Solver.SolveSudokuMain(MainBoard);
 
-            this.MenuToggleButton.IsChecked = false;
+            MenuButton_Uncheck();
 
             NavigatePlayingPage();
         }
@@ -255,7 +261,7 @@ namespace Sudoku
             watch.Stop();
             Values.IsPlaying = false;
 
-            this.MenuToggleButton.IsChecked = false;
+            MenuButton_Uncheck();
 
             NavigateRulePage();
 
@@ -297,6 +303,15 @@ namespace Sudoku
         }
 
         /// <summary>
+        /// ChooseDifficultyPage を this.frame に表示する
+        /// </summary>
+        private void NavigateChooseDifficultyPage()
+        {
+            this.frame.Navigate(new ChooseDifficultyPage(), this);
+            Values.Difficulty = -1;
+        }
+
+        /// <summary>
         /// Clearボタンを押せるようにするか
         /// </summary>
         /// 
@@ -308,6 +323,16 @@ namespace Sudoku
             this.ClearAllButton.IsEnabled = _isEnabled;
             this.ClearButton.IsEnabled = _isEnabled;
         }
+
+        /// <summary>
+        /// メニューのボタンのチェックを外す
+        /// </summary>
+        private void MenuButton_Uncheck()
+        {
+            this.MenuToggleButton.IsChecked = false;
+        }
+
+
 
         private bool _allowDirectNavigation = false;
         private NavigatingCancelEventArgs _navArgs = null;
