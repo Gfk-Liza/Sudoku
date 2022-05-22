@@ -136,6 +136,9 @@
       <DependentUpon>CountDownPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Maker.cs" />
+    <Compile Include="MakingPage.xaml.cs">
+      <DependentUpon>MakingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlayingPage.xaml.cs">
       <DependentUpon>PlayingPage.xaml</DependentUpon>
     </Compile>
@@ -146,6 +149,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Solver.cs" />
+    <Compile Include="Values.cs" />
     <Page Include="AnalysisPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,6 +176,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MakingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PlayingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

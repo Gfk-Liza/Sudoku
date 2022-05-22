@@ -27,7 +27,7 @@ namespace Sudoku
         /// <summary>
         /// コントラクタ
         /// </summary>
-        public PlayingPage(Board[,] _board)
+        public PlayingPage()
         {
             InitializeComponent();
 
@@ -43,7 +43,7 @@ namespace Sudoku
 
             this.Grid_1.Focus();
 
-            ShowBoard(_board);
+            ShowBoard(MainWindow.MainBoard);
 
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Tick += new EventHandler(TimerMethod);
@@ -84,18 +84,18 @@ namespace Sudoku
                         labels[y, x].FontSize = 15;
                         if (Memo[y, x].Length > 5) labels[y, x].Text = $"{Memo[y, x].Substring(0, 5)}\n{Memo[y, x].Substring(5)}";
                         else labels[y, x].Text = Memo[y, x];
-                        labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting5];
+                        labels[y, x].Foreground = Values.colorList[Values.ColorSetting5];
                         continue;
                     }
 
                     labels[y, x].FontSize = 40;
                     labels[y, x].Text = converter[board[y, x].Number];
 
-                    if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
-                    else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
-                    else labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting2];
+                    if (board[y, x].IsPeculiar) labels[y, x].Foreground = Values.colorList[Values.ColorSetting1];
+                    else if (board[y, x].IsAnswer) labels[y, x].Foreground = Values.colorList[Values.ColorSetting3];
+                    else labels[y, x].Foreground = Values.colorList[Values.ColorSetting2];
 
-                    if (MainWindow.checkSetting1 && !inPN[y, x]) labels[y, x].TextDecorations = TextDecorations.Underline;
+                    if (Values.CheckSetting1 && !inPN[y, x]) labels[y, x].TextDecorations = TextDecorations.Underline;
                     else labels[y, x].TextDecorations = null;
                 }
             }
@@ -112,21 +112,21 @@ namespace Sudoku
 
             sbyte[] mouseXY = MouseClass.MouseXYConvert(Mouse.GetPosition(this));
 
-            if (!IsOn.IsOnTheBoard(mouseXY) || (MainWindow.mainBoard[mouseXY[1], mouseXY[0]].IsPeculiar && MainWindow.mainBoard[mouseXY[1], mouseXY[0]].Number != 0))
+            if (!IsOn.IsOnTheBoard(mouseXY) || (MainWindow.MainBoard[mouseXY[1], mouseXY[0]].IsPeculiar && MainWindow.MainBoard[mouseXY[1], mouseXY[0]].Number != 0))
             {
                 this.SelectedXY.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0x00, 0x0, 0x0));
 
-                MainWindow.SelectedX = -1;
-                MainWindow.SelectedY = -1;
+                Values.SelectedX = -1;
+                Values.SelectedY = -1;
 
                 return;
             }
 
             this.SelectedXY.DataContext = new Point { X = mouseXY[0], Y = mouseXY[1] };
-            this.SelectedXY.BorderBrush = MainWindow.colorList[MainWindow.colorSetting4];
+            this.SelectedXY.BorderBrush = Values.colorList[Values.ColorSetting4];
 
-            MainWindow.SelectedX = mouseXY[0];
-            MainWindow.SelectedY = mouseXY[1];
+            Values.SelectedX = mouseXY[0];
+            Values.SelectedY = mouseXY[1];
         }
 
         /// <summary>
@@ -134,13 +134,13 @@ namespace Sudoku
         /// </summary>
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!IsOn.IsOnTheBoard(MainWindow.SelectedX, MainWindow.SelectedY)) return;
+            if (!IsOn.IsOnTheBoard(Values.SelectedX, Values.SelectedY)) return;
 
             if (e.Key == Key.Subtract)
             {
-                isMemo[MainWindow.SelectedY, MainWindow.SelectedX] = true;
-                MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = 0;
-                ShowBoard(MainWindow.mainBoard);
+                isMemo[Values.SelectedY, Values.SelectedX] = true;
+                MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = 0;
+                ShowBoard(MainWindow.MainBoard);
                 return;
             }
 
@@ -162,9 +162,9 @@ namespace Sudoku
 
             if (pressedKey == -1) return;
 
-            if (isMemo[MainWindow.SelectedY, MainWindow.SelectedX])
+            if (isMemo[Values.SelectedY, Values.SelectedX])
             {
-                string temp = Memo[MainWindow.SelectedY, MainWindow.SelectedX];
+                string temp = Memo[Values.SelectedY, Values.SelectedX];
                 string t = (pressedKey % 10).ToString();
                 string outtemp = "";
                 for (sbyte i = 1; i < 10; i++)
@@ -173,23 +173,23 @@ namespace Sudoku
                     else if (t == i.ToString() && !temp.Contains(i.ToString())) outtemp += t;
                 }
 
-                if (outtemp.Length == 0) isMemo[MainWindow.SelectedY, MainWindow.SelectedX] = false;
-                else Memo[MainWindow.SelectedY, MainWindow.SelectedX] = outtemp;
+                if (outtemp.Length == 0) isMemo[Values.SelectedY, Values.SelectedX] = false;
+                else Memo[Values.SelectedY, Values.SelectedX] = outtemp;
             }
             else
             {
-                List<sbyte> pn = Program.PlaceableNumbers(MainWindow.mainBoard, MainWindow.SelectedX, MainWindow.SelectedY);
-                inPN[MainWindow.SelectedY, MainWindow.SelectedX] = pn.Contains((sbyte)(pressedKey % 10));
-                if (pressedKey == 0) inPN[MainWindow.SelectedY, MainWindow.SelectedX] = true;
+                List<sbyte> pn = Program.PlaceableNumbers(MainWindow.MainBoard, Values.SelectedX, Values.SelectedY);
+                inPN[Values.SelectedY, Values.SelectedX] = pn.Contains((sbyte)(pressedKey % 10));
+                if (pressedKey == 0) inPN[Values.SelectedY, Values.SelectedX] = true;
 
-                MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
+                MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = (sbyte)(pressedKey % 10);
             }
 
-            ShowBoard(MainWindow.mainBoard);
+            ShowBoard(MainWindow.MainBoard);
 
-            if (MainWindow.isPlaying)
+            if (Values.IsPlaying)
             {
-                if (Program.IsFin(MainWindow.mainBoard))
+                if (Program.IsFin(MainWindow.MainBoard))
                 {
                     MainWindow.watch.Stop();
                     this.Correct.Content = "正解!";

@@ -20,7 +20,7 @@ namespace Sudoku
         public AnalysisPage()
         {
             InitializeComponent();
-            ShowBoard(MainWindow.mainBoard);
+            ShowBoard(MainWindow.MainBoard);
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace Sudoku
                     labels[y, x].Text = converter[board[y, x].Number];
                     labels[y, x].FontSize = 40;
 
-                    if (board[y, x].IsPeculiar) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting1];
-                    else if (board[y, x].IsAnswer) labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting3];
-                    else labels[y, x].Foreground = MainWindow.colorList[MainWindow.colorSetting2];
+                    if (board[y, x].IsPeculiar) labels[y, x].Foreground = Values.colorList[Values.ColorSetting1];
+                    else if (board[y, x].IsAnswer) labels[y, x].Foreground = Values.colorList[Values.ColorSetting3];
+                    else labels[y, x].Foreground = Values.colorList[Values.ColorSetting2];
                 }
             }
         }
@@ -74,17 +74,17 @@ namespace Sudoku
             {
                 this.SelectedXY.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0x00, 0x0, 0x0));
 
-                MainWindow.SelectedX = -1;
-                MainWindow.SelectedY = -1;
+                Values.SelectedX = -1;
+                Values.SelectedY = -1;
 
                 return;
             }
 
             this.SelectedXY.DataContext = new Point { X = mouseXY[0], Y = mouseXY[1] };
-            this.SelectedXY.BorderBrush = MainWindow.colorList[MainWindow.colorSetting4];
+            this.SelectedXY.BorderBrush = Values.colorList[Values.ColorSetting4];
 
-            MainWindow.SelectedX = mouseXY[0];
-            MainWindow.SelectedY = mouseXY[1];
+            Values.SelectedX = mouseXY[0];
+            Values.SelectedY = mouseXY[1];
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Sudoku
         /// </summary>
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!IsOn.IsOnTheBoard(MainWindow.SelectedX, MainWindow.SelectedY)) return;
+            if (!IsOn.IsOnTheBoard(Values.SelectedX, Values.SelectedY)) return;
 
             Key[] keyesList = new Key[20] {
                 Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
@@ -110,9 +110,9 @@ namespace Sudoku
                 }
             }
 
-            MainWindow.mainBoard[MainWindow.SelectedY, MainWindow.SelectedX].Number = (sbyte)(pressedKey % 10);
+            MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = (sbyte)(pressedKey % 10);
 
-            ShowBoard(MainWindow.mainBoard);
+            ShowBoard(MainWindow.MainBoard);
         }
 
         /// <summary>
@@ -120,14 +120,14 @@ namespace Sudoku
         /// </summary>
         private void AnalysisButton_Click(object sender, RoutedEventArgs e)
         {
-            Board[,] subBoard = Solver.SolveSudokuMain(MainWindow.mainBoard);
+            Board[,] subBoard = Solver.SolveSudokuMain(MainWindow.MainBoard);
             ShowBoard(subBoard);
 
             this.CanSolveLabel.Content = "";
             if (!Program.IsFin(subBoard)) this.CanSolveLabel.Content = "解無し";
-            else if (Maker.DuplicateAnswers(MainWindow.mainBoard)) this.CanSolveLabel.Content = "重複解が存在";
+            else if (Maker.DuplicateAnswers(MainWindow.MainBoard)) this.CanSolveLabel.Content = "重複解が存在";
 
-            MainWindow.mainBoard = subBoard;
+            MainWindow.MainBoard = subBoard;
         }
     }
 }

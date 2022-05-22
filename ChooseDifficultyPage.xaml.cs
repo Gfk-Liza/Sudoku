@@ -32,8 +32,8 @@ namespace Sudoku
         /// </summary>
         public ChooseDifficultyPage()
         {
-            difficultyTemp = MainWindow.difficulty;
-            MainWindow.difficulty = -1;
+            difficultyTemp = Values.Difficulty;
+            Values.Difficulty = -1;
 
             InitializeComponent();
 
@@ -56,7 +56,7 @@ namespace Sudoku
         /// </summary>
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.difficulty = difficultyTemp;
+            Values.Difficulty = difficultyTemp;
         }
     }
 }

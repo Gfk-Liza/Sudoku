@@ -38,39 +38,10 @@ namespace Sudoku
             NavigationCommands.BrowseForward.InputGestures.Clear();
         }
 
-
-        // play中か
-        public static bool isPlaying = false;
-
-        // 難易度
-        public static sbyte difficulty = 3;
-        // 選択されている X 座標
-        public static sbyte SelectedX = -1;
-        // 選択されている Y 座標
-        public static sbyte SelectedY = -1;
-
-        // 元の数字の色の設定
-        public static sbyte colorSetting1 = 0;
-        // 記入する数字の色の設定
-        public static sbyte colorSetting2 = 4;
-        // 回答の数字の色の設定
-        public static sbyte colorSetting3 = 3;
-        // 選択枠の色の設定
-        public static sbyte colorSetting4 = 5;
-        // メモの数字の色の設定
-        public static sbyte colorSetting5 = 1;
-
-        // 入力時にルールに違反していたら、下線を引く
-        public static bool checkSetting1 = false;
-
-        // 色
-        public static readonly SolidColorBrush[] colorList = new SolidColorBrush[10] {
-            Brushes.Black, Brushes.Gray, Brushes.Pink, Brushes.Red, Brushes.Orange,
-            Brushes.Yellow, Brushes.YellowGreen, Brushes.Green, Brushes.Blue, Brushes.SkyBlue
-        };
+        
 
         // MainBoard
-        public static Board[,] mainBoard = NewBoard.MakeNewBoard(false);
+        public static Board[,] MainBoard = NewBoard.MakeNewBoard(false);
 
         // あける穴の数（難易度別）
         public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 46, 50, 54, 81 };
@@ -84,12 +55,7 @@ namespace Sudoku
         // カウントダウン復帰用のタイマー
         private readonly DispatcherTimer timer2 = new DispatcherTimer();
 
-
-        // レベル選択画面のボタンの更新速度(ミリ秒)
-        private const sbyte UPDATE_RATE = 50;
-
-        // 画面遷移時の速度(ミリ秒)
-        public const int ANIMATION_TIME_SPAN = 200;
+        private readonly DispatcherTimer timer3 = new DispatcherTimer();
 
 
 
@@ -102,7 +68,7 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, UPDATE_RATE);
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
             timer2.Tick += new EventHandler(TimerMethod1);
             timer2.Start();
         }
@@ -112,7 +78,7 @@ namespace Sudoku
         /// </summary>
         private void TimerMethod1(object sender, EventArgs e)
         {
-            if (difficulty == -1) return;
+            if (Values.Difficulty == -1) return;
 
             timer2.Stop();
 
@@ -122,8 +88,8 @@ namespace Sudoku
             timer.Interval = new TimeSpan(0, 0, 0, 3, 0);
             timer.Tick += new EventHandler(TimerMethod2);
             timer.Start();
-            
-            difficulty = -1;
+
+            Values.Difficulty = -1;
         }
 
         /// <summary>
@@ -132,7 +98,7 @@ namespace Sudoku
         private void TimerMethod2(object sender, EventArgs e)
         {
             timer.Stop();
-            isPlaying = true;
+            Values.IsPlaying = true;
 
             watch.Restart();
             NavigatePlayingPage();
@@ -144,9 +110,27 @@ namespace Sudoku
         /// </summary>
         private void MakeNewSudoku()
         {
-            Thread thread = new Thread(new ThreadStart(() => { mainBoard = Maker.MakeSudokuMain(difficultyList[difficulty]); }));
+            Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(difficultyList[Values.Difficulty]); }));
+
+            timer3.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timer3.Tick += new EventHandler(TimerMethod4);
+            timer3.Start();
+
             thread.Start();
             thread.Join();
+
+            timer3.Stop();
+            NavigatePlayingPage();
+        }
+
+        /// <summary>
+        /// MakeNewSudoku >> timer3
+        /// </summary>
+        private void TimerMethod4(object sender, EventArgs e)
+        {
+            timer3.Stop();
+
+            NavigateMakingPage();
         }
 
 
@@ -179,7 +163,7 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new ChooseDifficultyPage(), this);
 
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, UPDATE_RATE);
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
             timer2.Tick += new EventHandler(TimerMethod3);
             timer2.Start();
         }
@@ -189,7 +173,8 @@ namespace Sudoku
         /// </summary>
         private void TimerMethod3(object sender, EventArgs e)
         {
-            if (difficulty == -1) return;
+            // 値が変更されていないなら関数をぬける
+            if (Values.Difficulty == -1) return;
 
             timer2.Stop();
             MakeNewSudoku();
@@ -204,11 +189,11 @@ namespace Sudoku
         private void AnalysisButton_Click(object sender, RoutedEventArgs e)
         {
             watch.Stop();
-            isPlaying = false;
+            Values.IsPlaying = false;
 
             this.MenuToggleButton.IsChecked = false;
 
-            this.frame.Navigate(new AnalysisPage(), this);
+            NavigateAnalysisPage();
 
             this.ClearAllButton.IsEnabled = true;
             this.ClearButton.IsEnabled = true;
@@ -221,9 +206,9 @@ namespace Sudoku
         private void SolutionButton_Click(object sender, RoutedEventArgs e)
         {
             watch.Stop();
-            isPlaying = false;
+            Values.IsPlaying = false;
 
-            mainBoard = Solver.SolveSudokuMain(mainBoard);
+            MainBoard = Solver.SolveSudokuMain(MainBoard);
 
             this.MenuToggleButton.IsChecked = false;
 
@@ -236,14 +221,14 @@ namespace Sudoku
         private void BeBrandNewButton_Click(object sender, RoutedEventArgs e)
         {
             watch.Stop();
-            mainBoard = NewBoard.MakeNewBoard(false);
-            if (isPlaying)
+            MainBoard = NewBoard.MakeNewBoard(false);
+            if (Values.IsPlaying)
             {
-                isPlaying = false;
+                Values.IsPlaying = false;
                 NavigatePlayingPage();
                 return;
             }
-            this.frame.Navigate(new AnalysisPage(), this);
+            NavigateAnalysisPage();
         }
 
         /// <summary>
@@ -255,16 +240,16 @@ namespace Sudoku
             {
                 for (sbyte j = 0; j < 9; j++)
                 {
-                    if (!mainBoard[i, j].IsPeculiar) mainBoard[i, j] = new Board(0, false, false);
+                    if (!MainBoard[i, j].IsPeculiar) MainBoard[i, j] = new Board(0, false, false);
                 }
             }
 
-            if (isPlaying)
+            if (Values.IsPlaying)
             {
                 NavigatePlayingPage();
                 return;
             }
-            this.frame.Navigate(new AnalysisPage(), this);
+            NavigateAnalysisPage();
         }
 
         /// <summary>
@@ -273,29 +258,51 @@ namespace Sudoku
         private void RuleOfSudokuButton_Click(object sender, RoutedEventArgs e)
         {
             watch.Stop();
-            isPlaying = false;
+            Values.IsPlaying = false;
 
             this.MenuToggleButton.IsChecked = false;
 
-            this.frame.Navigate(new RulePage(), this);
+            NavigateRulePage();
 
             this.ClearAllButton.IsEnabled = false;
             this.ClearButton.IsEnabled = false;
         }
+
 
         /// <summary>
         /// PlaingPage を this.frame に表示する
         /// </summary>
         private void NavigatePlayingPage()
         {
-            this.frame.Navigate(new PlayingPage(mainBoard), this);
+            this.frame.Navigate(new PlayingPage(), this);
             this.ClearAllButton.IsEnabled = true;
             this.ClearButton.IsEnabled = true;
         }
 
+        /// <summary>
+        /// RulePage を this.frame に表示する
+        /// </summary>
+        private void NavigateRulePage()
+        {
+            this.frame.Navigate(new RulePage(), this);
+        }
+
+        /// <summary>
+        /// AnalysisPage を this.frame に表示する
+        /// </summary>
+        private void NavigateAnalysisPage()
+        {
+            this.frame.Navigate(new AnalysisPage(), this);
+        }
+
+        private void NavigateMakingPage()
+        {
+            this.frame.Navigate(new MakingPage(), this);
+        }
+
         private bool _allowDirectNavigation = false;
         private NavigatingCancelEventArgs _navArgs = null;
-        private void Frame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void Frame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             if (frame.Content != null && !_allowDirectNavigation)
             {
@@ -312,7 +319,7 @@ namespace Sudoku
                     96.0,
                     PixelFormats.Pbgra32);
                 DrawingVisual dv = new DrawingVisual();
-                using (var dc = dv.RenderOpen())
+                using (DrawingContext dc = dv.RenderOpen())
                 {
                     VisualBrush vb = new VisualBrush(visual);
                     dc.DrawRectangle(vb, null, bounds);
@@ -328,14 +335,14 @@ namespace Sudoku
                 ThicknessAnimation animation0 = new ThicknessAnimation();
                 animation0.From = new Thickness(this.frame.ActualWidth, 60, -1 * this.frame.ActualWidth, 0);
                 animation0.To = new Thickness(10, 60, 10, 10);
-                animation0.Duration = TimeSpan.FromMilliseconds(ANIMATION_TIME_SPAN);
+                animation0.Duration = TimeSpan.FromMilliseconds(Values.ANIMATION_TIME_SPAN);
                 this.frame.BeginAnimation(MarginProperty, animation0);
 
                 // 遷移前ページを画像可した要素を左にスライドするアニメーション
                 ThicknessAnimation animation1 = new ThicknessAnimation();
                 animation1.From = new Thickness(10, 60, 10, 10);
                 animation1.To = new Thickness(-1 * this.frame.ActualWidth, 60, this.frame.ActualWidth, 0);
-                animation1.Duration = TimeSpan.FromMilliseconds(ANIMATION_TIME_SPAN);
+                animation1.Duration = TimeSpan.FromMilliseconds(Values.ANIMATION_TIME_SPAN);
             }
 
             _allowDirectNavigation = false;
