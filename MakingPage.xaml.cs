@@ -18,13 +18,8 @@ namespace Sudoku
         public MakingPage()
         {
             InitializeComponent();
-        }
 
-        public static sbyte progressValue = 0;
-
-        private void UpdateProgressBarMain(object sender, EventArgs e)
-        {
-            this.MakingProgressBar.Value = progressValue;
+            this.MakingProgressBar.IsIndeterminate = true;
         }
     }
 }

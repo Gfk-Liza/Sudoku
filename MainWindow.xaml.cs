@@ -13,7 +13,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
-using SolidColorBrush = System.Windows.Media.SolidColorBrush;
 
 
 namespace Sudoku
@@ -31,8 +30,7 @@ namespace Sudoku
             this.InitializeComponent();
 
             NavigatePlayingPage();
-            this.ClearAllButton.IsEnabled = false;
-            this.ClearButton.IsEnabled = false;
+            ClearBTNsEnabled(false);
 
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
@@ -56,6 +54,8 @@ namespace Sudoku
         private readonly DispatcherTimer timer2 = new DispatcherTimer();
 
         private readonly DispatcherTimer timer3 = new DispatcherTimer();
+
+        private readonly Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(difficultyList[Values.Difficulty]); }));
 
 
 
@@ -110,17 +110,14 @@ namespace Sudoku
         /// </summary>
         private void MakeNewSudoku()
         {
-            Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(difficultyList[Values.Difficulty]); }));
-
-            timer3.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timer3.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
             timer3.Tick += new EventHandler(TimerMethod4);
             timer3.Start();
 
-            thread.Start();
-            thread.Join();
+            NavigateMakingPage();
 
-            timer3.Stop();
-            NavigatePlayingPage();
+            thread.Start();
+            
         }
 
         /// <summary>
@@ -128,9 +125,10 @@ namespace Sudoku
         /// </summary>
         private void TimerMethod4(object sender, EventArgs e)
         {
-            timer3.Stop();
+            if (thread.ThreadState == System.Threading.ThreadState.Running) return;
 
-            NavigateMakingPage();
+            timer3.Stop();
+            NavigatePlayingPage();
         }
 
 
@@ -151,8 +149,7 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
             this.frame.Navigate(new SettingsPage(), this);
 
-            this.ClearAllButton.IsEnabled = false;
-            this.ClearButton.IsEnabled = false;
+            ClearBTNsEnabled(false);
         }
 
         /// <summary>
@@ -179,7 +176,6 @@ namespace Sudoku
             timer2.Stop();
             MakeNewSudoku();
             watch.Restart();
-            NavigatePlayingPage();
         }
 
 
@@ -195,8 +191,7 @@ namespace Sudoku
 
             NavigateAnalysisPage();
 
-            this.ClearAllButton.IsEnabled = true;
-            this.ClearButton.IsEnabled = true;
+            ClearBTNsEnabled(true);
         }
 
 
@@ -264,8 +259,7 @@ namespace Sudoku
 
             NavigateRulePage();
 
-            this.ClearAllButton.IsEnabled = false;
-            this.ClearButton.IsEnabled = false;
+            ClearBTNsEnabled(false);
         }
 
 
@@ -275,8 +269,7 @@ namespace Sudoku
         private void NavigatePlayingPage()
         {
             this.frame.Navigate(new PlayingPage(), this);
-            this.ClearAllButton.IsEnabled = true;
-            this.ClearButton.IsEnabled = true;
+            ClearBTNsEnabled(false);
         }
 
         /// <summary>
@@ -295,9 +288,25 @@ namespace Sudoku
             this.frame.Navigate(new AnalysisPage(), this);
         }
 
+        /// <summary>
+        /// MakingPage を this.frame に表示する
+        /// </summary>
         private void NavigateMakingPage()
         {
             this.frame.Navigate(new MakingPage(), this);
+        }
+
+        /// <summary>
+        /// Clearボタンを押せるようにするか
+        /// </summary>
+        /// 
+        /// <param name="_isEnabled">
+        /// ボタンの .isEnabled
+        /// </param>
+        private void ClearBTNsEnabled(bool _isEnabled)
+        {
+            this.ClearAllButton.IsEnabled = _isEnabled;
+            this.ClearButton.IsEnabled = _isEnabled;
         }
 
         private bool _allowDirectNavigation = false;
