@@ -14,7 +14,7 @@ namespace Sudoku
     public static class Values
     {
         // レベル選択画面のボタンの更新速度(ミリ秒)
-        public const sbyte UPDATE_RATE = 50;
+        public const byte UPDATE_RATE = 50;
 
         // 画面遷移時の速度(ミリ秒)
         public const int ANIMATION_TIME_SPAN = 200;
@@ -32,12 +32,17 @@ namespace Sudoku
             "黒", "灰", "ピンク", "赤", "オレンジ", "黄", "黄緑", "緑", "青", "水"
         };
 
+        // あける穴の数（難易度別）
+        public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 46, 50, 54, 81 };
+
 
         // play中か
         public static bool IsPlaying = false;
 
         // 難易度
         public static sbyte Difficulty = 3;
+        // 難易度バックアップ
+        public static sbyte DifficultyTemp = Difficulty;
         // 選択されている X 座標
         public static sbyte SelectedX = -1;
         // 選択されている Y 座標
@@ -59,5 +64,8 @@ namespace Sudoku
 
         // バージョン情報
         public static readonly string VersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+
+        // カウントダウンの値
+        public const sbyte INITAL_COUNTDOWN = 3;
     }
 }

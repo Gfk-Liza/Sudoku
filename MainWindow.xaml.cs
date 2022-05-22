@@ -6,12 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 
 
@@ -36,13 +31,9 @@ namespace Sudoku
             NavigationCommands.BrowseForward.InputGestures.Clear();
         }
 
-        
 
         // MainBoard
         public static Board[,] MainBoard = NewBoard.MakeNewBoard(false);
-
-        // あける穴の数（難易度別）
-        public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 46, 50, 54, 81 };
 
         // Main timer
         public static readonly Stopwatch watch = new Stopwatch();
@@ -51,9 +42,9 @@ namespace Sudoku
         private readonly DispatcherTimer timer1 = new DispatcherTimer();
         private readonly DispatcherTimer timer2 = new DispatcherTimer();
 
-        private readonly Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(difficultyList[Values.Difficulty]); }));
-
         private static bool isTimeAttack = false;
+
+        Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
 
 
         /// <summary>
@@ -97,23 +88,11 @@ namespace Sudoku
         {
             if (Values.Difficulty == -1) return;
 
-            timer1.Stop();
+            Debug.WriteLine("<<<PASS>>>");
 
+            timer1.Stop();
             MakeNewSudoku();
         }
-
-        /// <summary>
-        /// 3秒後に呼ばれるメソッド
-        /// </summary>
-        private void TimerMethod2(object sender, EventArgs e)
-        {
-            timer1.Stop();
-            Values.IsPlaying = true;
-
-            watch.Restart();
-            NavigatePlayingPage();
-        }
-
 
         /// <summary>
         /// 迷路を生成する関数
@@ -126,7 +105,34 @@ namespace Sudoku
 
             NavigateMakingPage();
 
+            thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
+            thread.Interrupt();
             thread.Start();
+        }
+
+        /// <summary>
+        /// 3秒後に呼ばれるメソッド
+        /// </summary>
+        private void TimerMethod2(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            Values.IsPlaying = true;
+
+            NavigatePlayingPage();
+            watch.Restart();
+        }
+
+        /// <summary>
+        /// 0.05秒ごとに呼ばれるメソッド
+        /// </summary>
+        private void TimerMethod3(object sender, EventArgs e)
+        {
+            // 値が変更されていないなら関数をぬける
+            if (Values.Difficulty == -1) return;
+
+            timer1.Stop();
+            MakeNewSudoku();
+            watch.Restart();
         }
 
         /// <summary>
@@ -137,15 +143,15 @@ namespace Sudoku
             if (thread.ThreadState == System.Threading.ThreadState.Running) return;
 
             timer2.Stop();
-            NavigatePlayingPage();
 
             if (isTimeAttack)
             {
                 this.frame.Navigate(new CountDownPage(), this);
-                timer1.Interval = new TimeSpan(0, 0, 0, 3, 0);
+                timer1.Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0);
                 timer1.Tick += new EventHandler(TimerMethod2);
                 timer1.Start();
             }
+            else NavigatePlayingPage();
 
             isTimeAttack = false;
         }
@@ -169,19 +175,6 @@ namespace Sudoku
             this.frame.Navigate(new SettingsPage(), this);
 
             ClearBTNsEnabled(false);
-        }
-
-        /// <summary>
-        /// 0.05秒ごとに呼ばれるメソッド
-        /// </summary>
-        private void TimerMethod3(object sender, EventArgs e)
-        {
-            // 値が変更されていないなら関数をぬける
-            if (Values.Difficulty == -1) return;
-
-            timer1.Stop();
-            MakeNewSudoku();
-            watch.Restart();
         }
 
 
@@ -309,6 +302,8 @@ namespace Sudoku
         {
             this.frame.Navigate(new ChooseDifficultyPage(), this);
             Values.Difficulty = -1;
+
+            Debug.WriteLine("<<<ChoosePage>>>");
         }
 
         /// <summary>
@@ -330,56 +325,6 @@ namespace Sudoku
         private void MenuButton_Uncheck()
         {
             this.MenuToggleButton.IsChecked = false;
-        }
-
-
-
-        private bool _allowDirectNavigation = false;
-        private NavigatingCancelEventArgs _navArgs = null;
-        private void Frame_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            if (frame.Content != null && !_allowDirectNavigation)
-            {
-                e.Cancel = true;
-                _navArgs = e;
-
-                // 遷移前のページを画像に変換しイメージに設定
-                Frame visual = this.frame;
-                Rect bounds = VisualTreeHelper.GetDescendantBounds(visual);
-                RenderTargetBitmap bitmap = new RenderTargetBitmap(
-                    (int)bounds.Width,
-                    (int)bounds.Height,
-                    96.0,
-                    96.0,
-                    PixelFormats.Pbgra32);
-                DrawingVisual dv = new DrawingVisual();
-                using (DrawingContext dc = dv.RenderOpen())
-                {
-                    VisualBrush vb = new VisualBrush(visual);
-                    dc.DrawRectangle(vb, null, bounds);
-                }
-                bitmap.Render(dv);
-                bitmap.Freeze();
-
-                // フレームに遷移先のページを設定
-                _allowDirectNavigation = true;
-                this.frame.Navigate(_navArgs.Content);
-
-                // フレームを右からスライドさせるアニメーション
-                ThicknessAnimation animation0 = new ThicknessAnimation();
-                animation0.From = new Thickness(this.frame.ActualWidth, 60, -1 * this.frame.ActualWidth, 0);
-                animation0.To = new Thickness(10, 60, 10, 10);
-                animation0.Duration = TimeSpan.FromMilliseconds(Values.ANIMATION_TIME_SPAN);
-                this.frame.BeginAnimation(MarginProperty, animation0);
-
-                // 遷移前ページを画像可した要素を左にスライドするアニメーション
-                ThicknessAnimation animation1 = new ThicknessAnimation();
-                animation1.From = new Thickness(10, 60, 10, 10);
-                animation1.To = new Thickness(-1 * this.frame.ActualWidth, 60, this.frame.ActualWidth, 0);
-                animation1.Duration = TimeSpan.FromMilliseconds(Values.ANIMATION_TIME_SPAN);
-            }
-
-            _allowDirectNavigation = false;
         }
     }
 }

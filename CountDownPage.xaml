@@ -6,12 +6,13 @@
       mc:Ignorable="d">
 
     <Grid>
-        <Label Content="3"
+        <Label Content=""
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
                Foreground="#FF673AB7"
                FontSize="500"
-               x:Name="CountDownLabel" Height="815"/>
+               x:Name="CountDownLabel"
+               Height="815"/>
 
     </Grid>
 </Page>
