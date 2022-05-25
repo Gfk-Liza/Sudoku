@@ -14,7 +14,7 @@ namespace Sudoku
     public static class Values
     {
         // レベル選択画面のボタンの更新速度(ミリ秒)
-        public const byte UPDATE_RATE = 50;
+        public const int UPDATE_RATE = 50;
 
         // 画面遷移時の速度(ミリ秒)
         public const int ANIMATION_TIME_SPAN = 200;

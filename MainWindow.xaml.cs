@@ -39,8 +39,9 @@ namespace Sudoku
         public static readonly Stopwatch watch = new Stopwatch();
 
         // タイマー
-        private readonly DispatcherTimer timer1 = new DispatcherTimer();
-        private readonly DispatcherTimer timer2 = new DispatcherTimer();
+        private static DispatcherTimer timer1 = new DispatcherTimer();
+        private static DispatcherTimer timer2 = new DispatcherTimer();
+        private static DispatcherTimer timer3 = new DispatcherTimer();
 
         private static bool isTimeAttack = false;
 
@@ -53,15 +54,9 @@ namespace Sudoku
         /// </summary>
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            MenuButton_Uncheck();
-            NavigateChooseDifficultyPage();
-
             isTimeAttack = true;
 
-            timer1.Stop();
-            timer1.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer1.Tick += new EventHandler(TimerMethod1);
-            timer1.Start();
+            GameMain();
         }
 
         /// <summary>
@@ -69,14 +64,22 @@ namespace Sudoku
         /// </summary>
         private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
         {
-            MenuButton_Uncheck();
-            NavigateChooseDifficultyPage();
-
             isTimeAttack = false;
 
-            timer1.Stop();
+            GameMain();
+        }
+        
+        /// <summary>
+        /// ゲームのMain処理
+        /// </summary>
+        private void GameMain()
+        {
+            MenuButton_Uncheck();
+            NavigateChooseDifficultyPage();
+            Values.IsPlaying = false;
+            if (timer1.IsEnabled) return;
             timer1.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer1.Tick += new EventHandler(TimerMethod3);
+            timer1.Tick += new EventHandler(TimerMethod_IsSelected);
             timer1.Start();
         }
 
@@ -84,13 +87,11 @@ namespace Sudoku
         /// <summary>
         /// BeginButton_Click >> timer2
         /// </summary>
-        private void TimerMethod1(object sender, EventArgs e)
+        private void TimerMethod_IsSelected(object sender, EventArgs e)
         {
             if (Values.Difficulty == -1) return;
 
-            Debug.WriteLine("<<<PASS>>>");
-
-            timer1.Stop();
+            StopAllTimers();
             MakeNewSudoku();
         }
 
@@ -99,61 +100,56 @@ namespace Sudoku
         /// </summary>
         private void MakeNewSudoku()
         {
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
-            timer2.Tick += new EventHandler(TimerMethod4);
-            timer2.Start();
+            StopAllTimers();
 
             NavigateMakingPage();
 
             thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
             thread.Interrupt();
             thread.Start();
+            
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+            timer2.Tick += new EventHandler(TimerMethod_IsFinished);
+            timer2.Start();
         }
 
         /// <summary>
         /// 3秒後に呼ばれるメソッド
         /// </summary>
-        private void TimerMethod2(object sender, EventArgs e)
+        private void TimerMethod_CountDown(object sender, EventArgs e)
         {
-            timer1.Stop();
+            StopAllTimers();
             Values.IsPlaying = true;
 
             NavigatePlayingPage();
             watch.Restart();
         }
 
-        /// <summary>
-        /// 0.05秒ごとに呼ばれるメソッド
-        /// </summary>
-        private void TimerMethod3(object sender, EventArgs e)
-        {
-            // 値が変更されていないなら関数をぬける
-            if (Values.Difficulty == -1) return;
-
-            timer1.Stop();
-            MakeNewSudoku();
-            watch.Restart();
-        }
 
         /// <summary>
         /// MakeNewSudoku >> timer3
         /// </summary>
-        private void TimerMethod4(object sender, EventArgs e)
+        private void TimerMethod_IsFinished(object sender, EventArgs e)
         {
             if (thread.ThreadState == System.Threading.ThreadState.Running) return;
-
-            timer2.Stop();
+            
+            StopAllTimers();
 
             if (isTimeAttack)
             {
-                this.frame.Navigate(new CountDownPage(), this);
-                timer1.Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0);
-                timer1.Tick += new EventHandler(TimerMethod2);
-                timer1.Start();
-            }
-            else NavigatePlayingPage();
+                NavigateCountDownPage();
+                
+                timer3.Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0);
+                timer3.Tick += new EventHandler(TimerMethod_CountDown);
+                timer3.Start();
 
-            isTimeAttack = false;
+                isTimeAttack = false;
+            }
+            else
+            {
+                NavigatePlayingPage();
+                watch.Restart();
+            }
         }
 
 
@@ -172,7 +168,7 @@ namespace Sudoku
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             MenuButton_Uncheck();
-            this.frame.Navigate(new SettingsPage(), this);
+            NavigateSettingsPage();
 
             ClearBTNsEnabled(false);
         }
@@ -307,6 +303,23 @@ namespace Sudoku
         }
 
         /// <summary>
+        /// SettingsPage を this.frame に表示する
+        /// </summary>
+        private void NavigateSettingsPage()
+        {
+            this.frame.Navigate(new SettingsPage(), this);
+        }
+
+        /// <summary>
+        /// CountDownPage を this.frame に表示する
+        /// </summary>
+        private void NavigateCountDownPage()
+        {
+            this.frame.Navigate(new CountDownPage(), this);
+        }
+
+
+        /// <summary>
         /// Clearボタンを押せるようにするか
         /// </summary>
         /// 
@@ -325,6 +338,13 @@ namespace Sudoku
         private void MenuButton_Uncheck()
         {
             this.MenuToggleButton.IsChecked = false;
+        }
+
+        private void StopAllTimers()
+        {
+            timer1.Stop();
+            timer2.Stop();
+            timer3.Stop();
         }
     }
 }
