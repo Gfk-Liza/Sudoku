@@ -298,8 +298,6 @@ namespace Sudoku
         {
             this.frame.Navigate(new ChooseDifficultyPage(), this);
             Values.Difficulty = -1;
-
-            Debug.WriteLine("<<<ChoosePage>>>");
         }
 
         /// <summary>
@@ -340,11 +338,23 @@ namespace Sudoku
             this.MenuToggleButton.IsChecked = false;
         }
 
+        /// <summary>
+        /// 全てのタイマーを停止させる
+        /// </summary>
         private void StopAllTimers()
         {
             timer1.Stop();
             timer2.Stop();
             timer3.Stop();
+        }
+
+
+        /// <summary>
+        /// window が閉じていく時のイベント
+        /// </summary>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (thread.ThreadState == System.Threading.ThreadState.Running) thread.Abort();
         }
     }
 }

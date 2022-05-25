@@ -223,9 +223,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\board_1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\appIcon.ico" />
   </ItemGroup>
   <ItemGroup>
