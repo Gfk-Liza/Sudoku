@@ -48,6 +48,7 @@ namespace Sudoku
             $"鬼レベル\n可能な限り穴が空いています。\nプロか天才。",
         };
 
+        public static readonly string[] converter = new string[10] { " ", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
         // play中か
         public static bool IsPlaying = false;

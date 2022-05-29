@@ -30,8 +30,11 @@ namespace Sudoku
         /// </summary>
         public PlayingPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+        }
 
+        public void INIT()
+        {
             for (sbyte y = 0; y < 9; y++)
             {
                 for (sbyte x = 0; x < 9; x++)
@@ -47,6 +50,8 @@ namespace Sudoku
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Tick += new EventHandler(TimerMethod);
             timer.Start();
+
+            ShowBoard(MainWindow.MainBoard);
         }
 
 
@@ -57,7 +62,7 @@ namespace Sudoku
         /// <param name="board">
         /// 盤面の状態
         /// </param>
-        public void ShowBoard(Board[,] board)
+        private void ShowBoard(Board[,] board)
         {
             TextBlock[,] labels = new TextBlock[9, 9]
             {
@@ -71,8 +76,6 @@ namespace Sudoku
                 { this.L70, this.L71, this.L72, this.L73, this.L74, this.L75, this.L76, this.L77, this.L78 },
                 { this.L80, this.L81, this.L82, this.L83, this.L84, this.L85, this.L86, this.L87, this.L88 }
             };
-
-            string[] converter = new string[10] { " ", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
             
             for (sbyte y = 0; y < 9; y++)
             {
@@ -88,7 +91,7 @@ namespace Sudoku
                     }
 
                     labels[y, x].FontSize = 40;
-                    labels[y, x].Text = converter[board[y, x].Number];
+                    labels[y, x].Text = Values.converter[board[y, x].Number];
 
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = Values.colorList[Values.ColorSetting1];
                     else if (board[y, x].IsAnswer) labels[y, x].Foreground = Values.colorList[Values.ColorSetting3];
@@ -137,8 +140,7 @@ namespace Sudoku
 
             if (e.Key == Key.Subtract)
             {
-                isMemo[Values.SelectedY, Values.SelectedX] = true;
-                MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = 0;
+                ToMemo();
                 ShowBoard(MainWindow.MainBoard);
                 return;
             }
@@ -161,6 +163,15 @@ namespace Sudoku
 
             if (pressedKey == -1) return;
 
+            if (pressedKey % 10 == 0)
+            {
+                isMemo[Values.SelectedY, Values.SelectedX] = false;
+                Memo[Values.SelectedY, Values.SelectedX] = "";
+                MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = 0;
+                ShowBoard(MainWindow.MainBoard);
+                return;
+            }
+
             if (isMemo[Values.SelectedY, Values.SelectedX])
             {
                 string temp = Memo[Values.SelectedY, Values.SelectedX];
@@ -172,7 +183,11 @@ namespace Sudoku
                     else if (t == i.ToString() && !temp.Contains(i.ToString())) outtemp += t;
                 }
 
-                if (outtemp.Length == 0) isMemo[Values.SelectedY, Values.SelectedX] = false;
+                if (outtemp.Length == 0)
+                {
+                    isMemo[Values.SelectedY, Values.SelectedX] = false;
+                    Memo[Values.SelectedY, Values.SelectedX] = "";
+                }
                 else Memo[Values.SelectedY, Values.SelectedX] = outtemp;
             }
             else
@@ -186,14 +201,23 @@ namespace Sudoku
 
             ShowBoard(MainWindow.MainBoard);
 
-            if (Values.IsPlaying)
-            {
-                if (Program.IsFin(MainWindow.MainBoard))
-                {
-                    MainWindow.watch.Stop();
-                    this.Correct.Content = "正解!";
-                }
-            }
+            if (Values.IsPlaying) return;
+            if (Program.IsFin(MainWindow.MainBoard)) return;
+            MainWindow.watch.Stop();
+            this.Correct.Content = "正解!";
+        }
+
+
+        /// <summary>
+        /// メモ化
+        /// </summary>
+        private void ToMemo()
+        {
+            isMemo[Values.SelectedY, Values.SelectedX] = true;
+            if (Memo[Values.SelectedY, Values.SelectedX] != "") return;
+            if (MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number == 0) return;
+            Memo[Values.SelectedY, Values.SelectedX] = MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number.ToString();
+            MainWindow.MainBoard[Values.SelectedY, Values.SelectedX].Number = 0;
         }
 
 

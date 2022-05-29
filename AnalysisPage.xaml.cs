@@ -44,13 +44,11 @@ namespace Sudoku
                 { this.L80, this.L81, this.L82, this.L83, this.L84, this.L85, this.L86, this.L87, this.L88 }
             };
 
-            string[] converter = new string[10] { " ", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
             for (sbyte y = 0; y < 9; y++)
             {
                 for (sbyte x = 0; x < 9; x++)
                 {
-                    labels[y, x].Text = converter[board[y, x].Number];
+                    labels[y, x].Text = Values.converter[board[y, x].Number];
                     labels[y, x].FontSize = 40;
 
                     if (board[y, x].IsPeculiar) labels[y, x].Foreground = Values.colorList[Values.ColorSetting1];
@@ -59,7 +57,6 @@ namespace Sudoku
                 }
             }
         }
-
 
 
         /// <summary>
@@ -93,7 +90,8 @@ namespace Sudoku
         {
             if (!IsOn.IsOnTheBoard(Values.SelectedX, Values.SelectedY)) return;
 
-            Key[] keyesList = new Key[20] {
+            Key[] keyesList = new Key[20]
+            {
                 Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
                 Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
                 Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9

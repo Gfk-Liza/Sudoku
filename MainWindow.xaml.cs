@@ -273,7 +273,7 @@ namespace Sudoku
         {
             this.frame.Navigate(MainPlayingPage, this);
             ClearBTNsEnabled(false);
-            MainPlayingPage.ShowBoard(MainBoard);
+            MainPlayingPage.INIT();
         }
 
         /// <summary>
