@@ -145,7 +145,8 @@ namespace Sudoku
                 return;
             }
 
-            Key[] keyesList = new Key[20] {
+            Key[] keyesList = new Key[20]
+            {
                 Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
                 Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
                 Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9
