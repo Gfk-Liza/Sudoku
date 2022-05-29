@@ -35,6 +35,19 @@ namespace Sudoku
         // あける穴の数（難易度別）
         public static readonly sbyte[] difficultyList = new sbyte[8] { 20, 27, 35, 42, 46, 50, 54, 81 };
 
+        // 各レベルごとの説明
+        public static readonly string[] EXPLANATION = new string[8]
+        {
+            $"入門レベル\n{difficultyList[0]}個程の穴が空いています。\n数独を始めたばかりの人にオススメです。",
+            $"超初級レベル\n{difficultyList[1]}個程の穴が空いています。\nある程度慣れた人は、瞬殺。",
+            $"初級レベル\n{difficultyList[2]}個程の穴が空いています。\n仮定法を取得中の方へ。",
+            $"中級レベル\n{difficultyList[3]}個程の穴が空いています。\n数独についてある程度基礎の解き方が分かっている人にオススメです。",
+            $"上級レベル\n{difficultyList[4]}個程の穴が空いています。\n数独について慣れたら。",
+            $"難問レベル\n{difficultyList[5]}個程の穴が空いています。\n時間をかければできるかも。",
+            $"超難問レベル\n{difficultyList[6]}個程の穴が空いています。\nできたら、超すごい。",
+            $"鬼レベル\n可能な限り穴が空いています。\nプロか天才。",
+        };
+
 
         // play中か
         public static bool IsPlaying = false;

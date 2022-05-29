@@ -17,8 +17,15 @@ namespace Sudoku
         /// </summary>
         public SettingsPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+        }
 
+
+        /// <summary>
+        /// 値を更新する
+        /// </summary>
+        public void SetValues()
+        {
             foreach (string color in Values.colorNamesList)
             {
                 this.ComboBox1.Items.Add(color);

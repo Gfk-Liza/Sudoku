@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,8 +44,6 @@ namespace Sudoku
 
             this.Grid_1.Focus();
 
-            ShowBoard(MainWindow.MainBoard);
-
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Tick += new EventHandler(TimerMethod);
             timer.Start();
@@ -58,7 +57,7 @@ namespace Sudoku
         /// <param name="board">
         /// 盤面の状態
         /// </param>
-        private void ShowBoard(Board[,] board)
+        public void ShowBoard(Board[,] board)
         {
             TextBlock[,] labels = new TextBlock[9, 9]
             {

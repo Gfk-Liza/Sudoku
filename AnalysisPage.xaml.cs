@@ -19,8 +19,7 @@ namespace Sudoku
         /// </summary>
         public AnalysisPage()
         {
-            InitializeComponent();
-            ShowBoard(MainWindow.MainBoard);
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace Sudoku
         /// <param name="board">
         /// 盤面の状態
         /// </param>
-        private void ShowBoard(Board[,] board)
+        public void ShowBoard(Board[,] board)
         {
             TextBlock[,] labels = new TextBlock[9, 9]
             {

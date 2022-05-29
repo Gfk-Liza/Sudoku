@@ -47,6 +47,15 @@ namespace Sudoku
 
         Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
 
+        // Pages
+        private static PlayingPage MainPlayingPage = new PlayingPage();
+        private static ChooseDifficultyPage MainChooseDifficultyPage = new ChooseDifficultyPage();
+        private static AnalysisPage MainAnalysisPage = new AnalysisPage();
+        private static MakingPage MainMakingPage = new MakingPage();
+        private static SettingsPage MainSettingsPage = new SettingsPage();
+        private static CountDownPage MainCountDownPage = new CountDownPage();
+        private static RulePage MainRulePage = new RulePage();
+
 
         /// <summary>
         /// ゲームを始める
@@ -76,9 +85,10 @@ namespace Sudoku
         {
             MenuButton_Uncheck();
             NavigateChooseDifficultyPage();
+
             Values.IsPlaying = false;
-            if (timer1.IsEnabled) return;
-            timer1.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+
+            timer1 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE) };
             timer1.Tick += new EventHandler(TimerMethod_IsSelected);
             timer1.Start();
         }
@@ -100,15 +110,13 @@ namespace Sudoku
         /// </summary>
         private void MakeNewSudoku()
         {
-            StopAllTimers();
-
             NavigateMakingPage();
 
             thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
             thread.Interrupt();
             thread.Start();
-            
-            timer2.Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE);
+
+            timer2 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE) };
             timer2.Tick += new EventHandler(TimerMethod_IsFinished);
             timer2.Start();
         }
@@ -138,8 +146,8 @@ namespace Sudoku
             if (isTimeAttack)
             {
                 NavigateCountDownPage();
-                
-                timer3.Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0);
+
+                timer3 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0) };
                 timer3.Tick += new EventHandler(TimerMethod_CountDown);
                 timer3.Start();
 
@@ -263,8 +271,9 @@ namespace Sudoku
         /// </summary>
         private void NavigatePlayingPage()
         {
-            this.frame.Navigate(new PlayingPage(), this);
+            this.frame.Navigate(MainPlayingPage, this);
             ClearBTNsEnabled(false);
+            MainPlayingPage.ShowBoard(MainBoard);
         }
 
         /// <summary>
@@ -272,7 +281,7 @@ namespace Sudoku
         /// </summary>
         private void NavigateRulePage()
         {
-            this.frame.Navigate(new RulePage(), this);
+            this.frame.Navigate(MainRulePage, this);
         }
 
         /// <summary>
@@ -280,7 +289,8 @@ namespace Sudoku
         /// </summary>
         private void NavigateAnalysisPage()
         {
-            this.frame.Navigate(new AnalysisPage(), this);
+            this.frame.Navigate(MainAnalysisPage, this);
+            MainAnalysisPage.ShowBoard(MainBoard);
         }
 
         /// <summary>
@@ -288,7 +298,7 @@ namespace Sudoku
         /// </summary>
         private void NavigateMakingPage()
         {
-            this.frame.Navigate(new MakingPage(), this);
+            this.frame.Navigate(MainMakingPage, this);
         }
 
         /// <summary>
@@ -296,8 +306,9 @@ namespace Sudoku
         /// </summary>
         private void NavigateChooseDifficultyPage()
         {
-            this.frame.Navigate(new ChooseDifficultyPage(), this);
+            this.frame.Navigate(MainChooseDifficultyPage, this);
             Values.Difficulty = -1;
+            MainChooseDifficultyPage.SetValues();
         }
 
         /// <summary>
@@ -305,7 +316,8 @@ namespace Sudoku
         /// </summary>
         private void NavigateSettingsPage()
         {
-            this.frame.Navigate(new SettingsPage(), this);
+            this.frame.Navigate(MainSettingsPage, this);
+            MainSettingsPage.SetValues();
         }
 
         /// <summary>
@@ -313,7 +325,8 @@ namespace Sudoku
         /// </summary>
         private void NavigateCountDownPage()
         {
-            this.frame.Navigate(new CountDownPage(), this);
+            this.frame.Navigate(MainCountDownPage, this);
+            MainCountDownPage.StartCountDown();
         }
 
 

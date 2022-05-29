@@ -13,7 +13,7 @@ namespace Sudoku
     /// </summary>
     public partial class CountDownPage : Page
     {
-        private readonly DispatcherTimer timer = new DispatcherTimer();
+        private DispatcherTimer timer = new DispatcherTimer();
         private sbyte countNumber = 3;
 
 
@@ -22,13 +22,19 @@ namespace Sudoku
         /// </summary>
         public CountDownPage()
         {
-            countNumber = Values.INITAL_COUNTDOWN;
+            this.InitializeComponent();
+        }
 
-            InitializeComponent();
+        /// <summary>
+        /// カウントダウンをはじめる
+        /// </summary>
+        public void StartCountDown()
+        {
+            countNumber = Values.INITAL_COUNTDOWN;
             this.CountDownLabel.Content = countNumber;
 
             // timer 起動
-            timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
+            timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1, 0) };
             timer.Tick += new EventHandler(TimerMethod);
             timer.Start();
         }

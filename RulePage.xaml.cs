@@ -16,7 +16,7 @@ namespace Sudoku
         /// </summary>
         public RulePage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }
