@@ -22,6 +22,7 @@ namespace Sudoku
             this.InitializeComponent();
         }
 
+
         /// <summary>
         /// 盤面を描画する
         /// </summary>
@@ -90,17 +91,11 @@ namespace Sudoku
         {
             if (!IsOn.IsOnTheBoard(Values.SelectedX, Values.SelectedY)) return;
 
-            Key[] keyesList = new Key[20]
-            {
-                Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
-                Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
-                Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9
-            };
             sbyte pressedKey = 0;
 
             for (sbyte i = 0; i < 20; i++)
             {
-                if (e.Key == keyesList[i])
+                if (e.Key == Values.keyesList[i])
                 {
                     pressedKey = i;
                     break;

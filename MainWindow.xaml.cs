@@ -40,11 +40,8 @@ namespace Sudoku
 
         // タイマー
         private static DispatcherTimer timer1 = new DispatcherTimer();
-        private static DispatcherTimer timer2 = new DispatcherTimer();
-        private static DispatcherTimer timer3 = new DispatcherTimer();
 
-        private static bool isTimeAttack = false;
-
+        // 数独を生成する非同期処理
         Thread thread = new Thread(new ThreadStart(() => { MainBoard = Maker.MakeSudokuMain(Values.difficultyList[Values.Difficulty]); }));
 
         // Pages
@@ -63,7 +60,7 @@ namespace Sudoku
         /// </summary>
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            isTimeAttack = true;
+            Values.isTimeAttack = true;
 
             GameMain();
         }
@@ -73,7 +70,7 @@ namespace Sudoku
         /// </summary>
         private void NewGenerationButton_Click(object sender, RoutedEventArgs e)
         {
-            isTimeAttack = false;
+            Values.isTimeAttack = false;
 
             GameMain();
         }
@@ -85,7 +82,7 @@ namespace Sudoku
         {
             MenuButton_Uncheck();
             NavigateChooseDifficultyPage();
-
+            StopAllTimers();
             Values.IsPlaying = false;
 
             timer1 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE) };
@@ -95,12 +92,12 @@ namespace Sudoku
 
 
         /// <summary>
-        /// BeginButton_Click >> timer2
+        /// 難易度が選択されているかと、その後のTimerMathod
         /// </summary>
         private void TimerMethod_IsSelected(object sender, EventArgs e)
         {
             if (Values.Difficulty == -1) return;
-
+            timer1.Stop();
             StopAllTimers();
             MakeNewSudoku();
         }
@@ -116,13 +113,13 @@ namespace Sudoku
             thread.Interrupt();
             thread.Start();
 
-            timer2 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE) };
-            timer2.Tick += new EventHandler(TimerMethod_IsFinished);
-            timer2.Start();
+            timer1 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Values.UPDATE_RATE) };
+            timer1.Tick += new EventHandler(TimerMethod_IsFinished);
+            timer1.Start();
         }
 
         /// <summary>
-        /// 3秒後に呼ばれるメソッド
+        /// カウントダウン後のTimerMethod
         /// </summary>
         private void TimerMethod_CountDown(object sender, EventArgs e)
         {
@@ -143,20 +140,22 @@ namespace Sudoku
             
             StopAllTimers();
 
-            if (isTimeAttack)
+            if (Values.isTimeAttack)
             {
                 NavigateCountDownPage();
 
-                timer3 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0) };
-                timer3.Tick += new EventHandler(TimerMethod_CountDown);
-                timer3.Start();
+                timer1 = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, Values.INITAL_COUNTDOWN, 0) };
+                timer1.Tick += new EventHandler(TimerMethod_CountDown);
+                timer1.Start();
 
-                isTimeAttack = false;
+                Values.isTimeAttack = false;
             }
             else
             {
                 NavigatePlayingPage();
                 watch.Restart();
+
+                Values.IsPlaying = true;
             }
         }
 
@@ -357,8 +356,6 @@ namespace Sudoku
         private void StopAllTimers()
         {
             timer1.Stop();
-            timer2.Stop();
-            timer3.Stop();
         }
 
 

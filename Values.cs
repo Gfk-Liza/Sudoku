@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Input;
 using System.Windows.Media;
 
 
@@ -14,10 +15,10 @@ namespace Sudoku
     public static class Values
     {
         // レベル選択画面のボタンの更新速度(ミリ秒)
-        public const int UPDATE_RATE = 50;
+        public const byte UPDATE_RATE = 50;
 
         // 画面遷移時の速度(ミリ秒)
-        public const int ANIMATION_TIME_SPAN = 200;
+        public const byte ANIMATION_TIME_SPAN = 200;
 
         // 色
         public static readonly SolidColorBrush[] colorList = new SolidColorBrush[10]
@@ -48,6 +49,13 @@ namespace Sudoku
             $"鬼レベル\n可能な限り穴が空いています。\nプロか天才。",
         };
 
+        public static readonly Key[] keyesList = new Key[20]
+        {
+            Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
+            Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4,
+            Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9
+        };
+
         public static readonly string[] converter = new string[10] { " ", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
         // play中か
@@ -75,6 +83,9 @@ namespace Sudoku
 
         // 入力時にルールに違反していたら、下線を引く
         public static bool CheckSetting1 = false;
+
+        // タイムアタックモードか
+        public static bool isTimeAttack = false;
 
         // バージョン情報
         public static readonly string VersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
