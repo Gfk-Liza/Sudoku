@@ -1,6 +1,7 @@
 ﻿
 // PlayingPage.xaml.cs
 
+using Sudoku.MouseProgram;
 using Sudoku.SudokuProgram;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,7 @@
 ﻿
 // AnalysisPage.xaml.cs
 
+using Sudoku.MouseProgram;
 using Sudoku.SudokuProgram;
 using System.Windows;
 using System.Windows.Controls;
@@ -74,7 +75,6 @@ namespace Sudoku
 
                 Values.SelectedX = -1;
                 Values.SelectedY = -1;
-
                 return;
             }
 

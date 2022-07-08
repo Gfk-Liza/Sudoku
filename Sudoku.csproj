@@ -194,7 +194,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MouseClass.cs" />
+    <Compile Include="MouseProgram\MouseClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

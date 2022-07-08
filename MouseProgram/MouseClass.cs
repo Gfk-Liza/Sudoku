@@ -1,10 +1,10 @@
 ﻿
-// MouseClass.cs
+// MouseProgram.MouseClass.cs
 
 using System.Windows;
 
 
-namespace Sudoku
+namespace Sudoku.MouseProgram
 { 
     /// <summary>
     /// マウスの位置座標を変換するクラス
