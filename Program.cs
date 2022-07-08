@@ -137,7 +137,7 @@ namespace Sudoku
         /// </returns>
         public static bool IsFinConveni(Board[,] map)
         {
-            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++)if (map[i, j].Number == 0) return false;
+            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) if (map[i, j].Number == 0) return false;
             return true;
         }
     }
