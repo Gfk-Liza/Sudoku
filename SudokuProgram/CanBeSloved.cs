@@ -1,8 +1,8 @@
 ﻿
-// CanBeSloved.cs
+// SudokuProgram.CanBeSloved.cs
 
 
-namespace Sudoku
+namespace Sudoku.SudokuProgram
 {
     /// <summary>
     /// 解けるか判定するクラス

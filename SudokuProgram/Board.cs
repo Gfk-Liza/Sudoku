@@ -1,8 +1,8 @@
 ﻿
-// Board.cs
+// SudokuProgram.Board.cs
 
 
-namespace Sudoku
+namespace Sudoku.SudokuProgram
 {
     /// <summary>
     /// 盤面の状態クラス
@@ -56,13 +56,7 @@ namespace Sudoku
         {
             Board[,] result = new Board[9, 9];
 
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    result[i, j] = new Board(0, isPecu, false);
-                }
-            }
+            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) result[i, j] = new Board(0, isPecu, false);
 
             return result.Clone() as Board[,];
         }

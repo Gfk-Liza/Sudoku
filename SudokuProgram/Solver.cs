@@ -1,10 +1,10 @@
 ﻿
-// Solver.cs
+// SudokuProgram.Solver.cs
 
 using System.Collections.Generic;
 
 
-namespace Sudoku
+namespace Sudoku.SudokuProgram
 { 
     /// <summary>
     /// 数独を解くクラス
@@ -38,13 +38,7 @@ namespace Sudoku
 
             Board[,] result = SolveSudoku(map).Clone() as Board[,];
 
-            for (sbyte y = 0; y < 9; y++)
-            {
-                for (sbyte x = 0; x < 9; x++)
-                {
-                    if (result[y, x].Number != 0) result[y, x].IsAnswer = true;
-                }
-            }
+            for (sbyte y = 0; y < 9; y++) for (sbyte x = 0; x < 9; x++) if (result[y, x].Number != 0) result[y, x].IsAnswer = true;
 
             return result;
         }
@@ -64,10 +58,9 @@ namespace Sudoku
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX = -1;
-            sbyte nY = -1;
+            sbyte nX;
+            sbyte nY;
 
-            bool isf = false;
             for (sbyte i = 0; i < 9; i++)
             {
                 for (sbyte j = 0; j < 9; j++)
@@ -76,15 +69,14 @@ namespace Sudoku
                     {
                         nX = j;
                         nY = i;
-                        isf = true;
-                        break;
+                        goto Exit;
                     }
                 }
-                if (isf) break;
             }
 
-            if (!isf) return map;
+            return map;
 
+            Exit:
 
             List<sbyte> placeableNumbersList = Program.PlaceableNumbers(map, nX, nY);
 

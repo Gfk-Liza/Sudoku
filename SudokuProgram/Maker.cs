@@ -1,12 +1,12 @@
 ﻿
-// Maker.cs
+// SudokuProgram.Maker.cs
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Sudoku
+namespace Sudoku.SudokuProgram
 {
     /// <summary>
     /// 数独を生成するクラス
@@ -38,13 +38,7 @@ namespace Sudoku
             result = MakeSudoku(result);
             result = MakeHoles(result, i);
 
-            for (sbyte y = 0; y < 9; y++)
-            {
-                for (sbyte x = 0; x < 9; x++)
-                {
-                    if (result[y, x].Number == 0) result[y, x].IsPeculiar = false;
-                }
-            }
+            for (sbyte y = 0; y < 9; y++) for (sbyte x = 0; x < 9; x++) if (result[y, x].Number == 0) result[y, x].IsPeculiar = false;
 
             return result.Clone() as Board[,];
         }
@@ -69,10 +63,9 @@ namespace Sudoku
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX = -1;
-            sbyte nY = -1;
+            sbyte nX;
+            sbyte nY;
 
-            bool isf = false;
             for (sbyte i = 0; i < 9; i++)
             {
                 for (sbyte j = 0; j < 9; j++)
@@ -81,28 +74,18 @@ namespace Sudoku
                     {
                         nX = j;
                         nY = i;
-                        isf = true;
-                        break;
+                        goto Exit1;
                     }
                 }
-                if (isf) break;
             }
 
-            bool isSame = true;
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    if (ans[i, j].Number != map[i, j].Number)
-                    {
-                        isSame = false;
-                        break;
-                    }
-                }
-                if (!isSame) break;
-            }
+            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) if (ans[i, j].Number != map[i, j].Number) goto Exit2;
 
-            if (!isf) return new bool[2] { true, isSame };
+            return new bool[2] { true, true };
+            Exit2:
+            return new bool[2] { true, false };
+
+            Exit1:
 
             List<sbyte> placeableNumbersList = PlaceableNumbers_2(map, nX, nY);
 
@@ -146,10 +129,9 @@ namespace Sudoku
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX = -1;
-            sbyte nY = -1;
+            sbyte nX;
+            sbyte nY;
 
-            bool isf = false;
             for (sbyte i = 0; i < 9; i++)
             {
                 for (sbyte j = 0; j < 9; j++)
@@ -158,14 +140,14 @@ namespace Sudoku
                     {
                         nX = j;
                         nY = i;
-                        isf = true;
-                        break;
+                        goto Exit;
                     }
                 }
-                if (isf) break;
             }
+            
+            return map;
 
-            if (!isf) return map;
+            Exit:
 
             List<sbyte> placeableNumbersList = PlaceableNumbers(map, nX, nY);
 
@@ -192,7 +174,6 @@ namespace Sudoku
                 Board[,] returnedBoard = MakeSudoku(nb);
                 if (IsFinConveni(returnedBoard)) return returnedBoard;
             }
-
 
             return map;
         }
@@ -253,13 +234,7 @@ namespace Sudoku
 
                     Board[,] map = new Board[9, 9];
 
-                    for (sbyte ty = 0; ty < 9; ty++)
-                    {
-                        for (sbyte tx = 0; tx < 9; tx++)
-                        {
-                            map[ty, tx] = new Board(mapArg[ty, tx].Number, mapArg[ty, tx].IsPeculiar, false);
-                        }
-                    }
+                    for (sbyte ty = 0; ty < 9; ty++) for (sbyte tx = 0; tx < 9; tx++) map[ty, tx] = new Board(mapArg[ty, tx].Number, mapArg[ty, tx].IsPeculiar, false);
 
                     map[y, x] = new Board(0, false, false);
 
@@ -268,7 +243,7 @@ namespace Sudoku
                         canPlace[y, x] = false;
                         return new sbyte[2] { x, y };
                     }
-                    else canPlace[y, x] = false;
+                    canPlace[y, x] = false;
                 }
             }
 
@@ -302,13 +277,7 @@ namespace Sudoku
         /// </summary>
         private static void ResetCanPlaceList()
         {
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    canPlace[i, j] = true;
-                }
-            }
+            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) canPlace[i, j] = true;
         }
     }
 }

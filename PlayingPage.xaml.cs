@@ -1,9 +1,9 @@
 ﻿
 // PlayingPage.xaml.cs
 
+using Sudoku.SudokuProgram;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

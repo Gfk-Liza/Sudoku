@@ -13,7 +13,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Sudoku")]
 [assembly: AssemblyDescription("数独アプリ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Gfk")]
 [assembly: AssemblyProduct("Sudoku")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
@@ -54,7 +54,7 @@ using System.Windows;
 // すべての値を指定するか、次を使用してビルド番号とリビジョン番号を既定に設定できます
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.3.2.8")]
-[assembly: AssemblyFileVersion("3.3.2.8")]
+[assembly: AssemblyVersion("3.3.2.9")]
+[assembly: AssemblyFileVersion("3.3.2.9")]
 
 [assembly: NeutralResourcesLanguage("ja-JP")]

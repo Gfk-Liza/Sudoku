@@ -1,8 +1,8 @@
 ﻿
-// IsOn.cs
+// SudokuProgram.IsOn.cs
 
 
-namespace Sudoku
+namespace Sudoku.SudokuProgram
 {
     /// <summary>
     /// 指定されたxy座標が盤面上にあるか判定するクラス
@@ -25,11 +25,7 @@ namespace Sudoku
         /// </returns>
         public static bool IsOnTheBoard(sbyte x, sbyte y)
         {
-            if (x > 8 || x < 0 || y > 8 || y < 0)
-            {
-                return false;
-            }
-            return true;
+            return x <= 8 && x >= 0 && y <= 8 && y >= 0;
         }
 
 

@@ -2,6 +2,7 @@
 // MainWindow.xaml.cs
 
 using MahApps.Metro.Controls;
+using Sudoku.SudokuProgram;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -149,14 +150,12 @@ namespace Sudoku
                 timer1.Start();
 
                 Values.isTimeAttack = false;
+                return;
             }
-            else
-            {
-                NavigatePlayingPage();
-                watch.Restart();
+            NavigatePlayingPage();
+            watch.Restart();
 
-                Values.IsPlaying = true;
-            }
+            Values.IsPlaying = true;
         }
 
 
@@ -233,13 +232,7 @@ namespace Sudoku
         /// </summary>
         private void EraseAllAnswersButton_Click(object sender, RoutedEventArgs e)
         {
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    if (!MainBoard[i, j].IsPeculiar) MainBoard[i, j] = new Board(0, false, false);
-                }
-            }
+            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) if (!MainBoard[i, j].IsPeculiar) MainBoard[i, j] = new Board(0, false, false);
 
             if (Values.IsPlaying)
             {
