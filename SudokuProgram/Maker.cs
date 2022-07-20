@@ -38,7 +38,8 @@ namespace Sudoku.SudokuProgram
             result = MakeSudoku(result);
             result = MakeHoles(result, i);
 
-            for (sbyte y = 0; y < 9; y++) for (sbyte x = 0; x < 9; x++) if (result[y, x].Number == 0) result[y, x].IsPeculiar = false;
+            sbyte y, x;
+            for (y = 0; y < 9; ++y) for (x = 0; x < 9; ++x) if (result[y, x].Number == 0) result[y, x].IsPeculiar = false;
 
             return result.Clone() as Board[,];
         }
@@ -63,44 +64,30 @@ namespace Sudoku.SudokuProgram
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX;
-            sbyte nY;
+            sbyte i, j, y, x;
 
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    if (map[i, j].Number == 0)
-                    {
-                        nX = j;
-                        nY = i;
-                        goto Exit1;
-                    }
-                }
-            }
+            for (i = 0; i < 9; ++i) for (j = 0; j < 9; ++j) if (map[i, j].Number == 0) goto Exit1;
 
-            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) if (ans[i, j].Number != map[i, j].Number) goto Exit2;
+            for (i = 0; i < 9; ++i) for (j = 0; j < 9; ++j) if (ans[i, j].Number != map[i, j].Number) return new bool[2] { true, false };
 
             return new bool[2] { true, true };
-            Exit2:
-            return new bool[2] { true, false };
 
             Exit1:
 
-            List<sbyte> placeableNumbersList = PlaceableNumbers_2(map, nX, nY);
+            List<sbyte> placeableNumbersList = PlaceableNumbers_2(map, i, j);
 
             if (placeableNumbersList.Count == 0) return new bool[2] { false, false };
 
-            foreach (sbyte i in placeableNumbersList)
+            Board[,] nb = new Board[9, 9];
+            foreach (sbyte p in placeableNumbersList)
             {
-                Board[,] nb = new Board[9, 9];
-                for (sbyte y = 0; y < 9; y++)
+                for (y = 0; y < 9; ++y)
                 {
-                    for (sbyte x = 0; x < 9; x++)
+                    for (x = 0; x < 9; ++x)
                     {
                         nb[y, x] = new Board(map[y, x].Number, map[y, x].IsPeculiar, false);
 
-                        if (y == nY && x == nX) nb[nY, nX].Number = i;
+                        if (y == i && x == j) nb[i, j].Number = p;
                     }
                 }
 
@@ -129,27 +116,15 @@ namespace Sudoku.SudokuProgram
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX;
-            sbyte nY;
+            sbyte i, j, y, x;
 
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    if (map[i, j].Number == 0)
-                    {
-                        nX = j;
-                        nY = i;
-                        goto Exit;
-                    }
-                }
-            }
+            for (i = 0; i < 9; ++i) for (j = 0; j < 9; ++j) if (map[i, j].Number == 0) goto Exit;
             
             return map;
 
             Exit:
 
-            List<sbyte> placeableNumbersList = PlaceableNumbers(map, nX, nY);
+            List<sbyte> placeableNumbersList = PlaceableNumbers(map, i, j);
 
             if (placeableNumbersList.Count == 0) return map;
 
@@ -157,16 +132,16 @@ namespace Sudoku.SudokuProgram
             Random randoms = new Random();
             placeableNumbersList = placeableNumbersList.OrderBy(a => randoms.Next(placeableNumbersList.Count)).ToList();
 
-            foreach (sbyte i in placeableNumbersList)
+            Board[,] nb = new Board[9, 9];
+            foreach (sbyte p in placeableNumbersList)
             {
-                Board[,] nb = new Board[9, 9];
-                for (sbyte y = 0; y < 9; y++)
+                for (y = 0; y < 9; ++y)
                 {
-                    for (sbyte x = 0; x < 9; x++)
+                    for (x = 0; x < 9; ++x)
                     {
                         nb[y, x] = new Board(map[y, x].Number, true, false);
 
-                        if (y == nY && x == nX) nb[nY, nX].Number = i;
+                        if (y == i && x == j) nb[i, j].Number = p;
                     }
                 }
 
@@ -196,10 +171,10 @@ namespace Sudoku.SudokuProgram
         private static Board[,] MakeHoles(Board[,] mapArg, sbyte holesNumber)
         {
             Board[,] map = mapArg.Clone() as Board[,];
-
+            sbyte[] possibleLocations;
             for (sbyte index = 0; index <= holesNumber; index++)
             {
-                sbyte[] possibleLocations = PossibleLocationsForMakingAHole(map).Clone() as sbyte[];
+                possibleLocations = PossibleLocationsForMakingAHole(map).Clone() as sbyte[];
 
                 if (possibleLocations[0] == -1) break;
                 map[possibleLocations[1], possibleLocations[0]].Number = 0;
@@ -226,15 +201,15 @@ namespace Sudoku.SudokuProgram
         {
             sbyte[] Y = (new sbyte[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }).OrderBy(i => Guid.NewGuid()).ToArray();
             sbyte[] X = (new sbyte[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }).OrderBy(i => Guid.NewGuid()).ToArray();
+            sbyte ty, tx;
+            Board[,] map = new Board[9, 9];
             foreach (sbyte y in Y)
             {
                 foreach (sbyte x in X)
                 {
                     if (!canPlace[y, x]) continue;
 
-                    Board[,] map = new Board[9, 9];
-
-                    for (sbyte ty = 0; ty < 9; ty++) for (sbyte tx = 0; tx < 9; tx++) map[ty, tx] = new Board(mapArg[ty, tx].Number, mapArg[ty, tx].IsPeculiar, false);
+                    for (ty = 0; ty < 9; ++ty) for (tx = 0; tx < 9; ++tx) map[ty, tx] = new Board(mapArg[ty, tx].Number, mapArg[ty, tx].IsPeculiar, false);
 
                     map[y, x] = new Board(0, false, false);
 
@@ -277,7 +252,8 @@ namespace Sudoku.SudokuProgram
         /// </summary>
         private static void ResetCanPlaceList()
         {
-            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) canPlace[i, j] = true;
+            sbyte i, j;
+            for (i = 0; i < 9; ++i) for (j = 0; j < 9; j++) canPlace[i, j] = true;
         }
     }
 }

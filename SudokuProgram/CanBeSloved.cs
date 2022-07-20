@@ -25,14 +25,14 @@ namespace Sudoku.SudokuProgram
         public static bool CanBeSlovedThis(Board[,] mapArg)
         {
             Board[,] map = mapArg.Clone() as Board[,];
-
-            for (sbyte y = 0; y < 9; y++)
+            sbyte y, x, serchingLocation;
+            for (y = 0; y < 9; ++y)
             {
-                for (sbyte x  = 0; x < 9; x++)
+                for (x  = 0; x < 9; ++x)
                 {
                     if (map[y, x].Number == 0) continue;
 
-                    sbyte serchingLocation = map[y, x].Number;
+                    serchingLocation = map[y, x].Number;
                     map[y, x].Number = 0;
 
                     if (!Program.PlaceableNumbers(map, x, y).Contains(serchingLocation))
@@ -44,7 +44,6 @@ namespace Sudoku.SudokuProgram
                     map[y, x].Number = serchingLocation;
                 }
             }
-
             return true;
         }
     }

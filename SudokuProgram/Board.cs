@@ -7,7 +7,7 @@ namespace Sudoku.SudokuProgram
     /// <summary>
     /// 盤面の状態クラス
     /// </summary>
-    public class Board
+    public struct Board
     {
         /// <summary>
         /// 盤面の状態
@@ -55,8 +55,8 @@ namespace Sudoku.SudokuProgram
         public static Board[,] MakeNewBoard(bool isPecu)
         {
             Board[,] result = new Board[9, 9];
-
-            for (sbyte i = 0; i < 9; i++) for (sbyte j = 0; j < 9; j++) result[i, j] = new Board(0, isPecu, false);
+            sbyte j, i;
+            for (i = 0; i < 9; i++) for (j = 0; j < 9; j++) result[i, j] = new Board(0, isPecu, false);
 
             return result.Clone() as Board[,];
         }

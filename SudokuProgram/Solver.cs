@@ -25,9 +25,10 @@ namespace Sudoku.SudokuProgram
         public static Board[,] SolveSudokuMain(Board[,] mapArg)
         {
             Board[,] map = mapArg.Clone() as Board[,];
-            for (sbyte y = 0; y < 9; y++)
+            sbyte y, x;
+            for (y = 0; y < 9; ++y)
             {
-                for (sbyte x = 0; x < 9; x++)
+                for (x = 0; x < 9; ++x)
                 {
                     if (map[y, x].Number == 0 || (map[y, x].IsAnswer && !map[y, x].IsPeculiar)) map[y, x] = new Board(0, false, true);
                     else map[y, x] = new Board(map[y, x].Number, true, false);
@@ -38,7 +39,7 @@ namespace Sudoku.SudokuProgram
 
             Board[,] result = SolveSudoku(map).Clone() as Board[,];
 
-            for (sbyte y = 0; y < 9; y++) for (sbyte x = 0; x < 9; x++) if (result[y, x].Number != 0) result[y, x].IsAnswer = true;
+            for (y = 0; y < 9; ++y) for (x = 0; x < 9; ++x) if (result[y, x].Number != 0) result[y, x].IsAnswer = true;
 
             return result;
         }
@@ -58,40 +59,28 @@ namespace Sudoku.SudokuProgram
         {
             Board[,] map = mapArg.Clone() as Board[,];
 
-            sbyte nX;
-            sbyte nY;
+            sbyte i, j, y, x;
 
-            for (sbyte i = 0; i < 9; i++)
-            {
-                for (sbyte j = 0; j < 9; j++)
-                {
-                    if (map[i, j].Number == 0)
-                    {
-                        nX = j;
-                        nY = i;
-                        goto Exit;
-                    }
-                }
-            }
+            for (i = 0; i < 9; ++i) for (j = 0; j < 9; ++j) if (map[i, j].Number == 0) goto Exit;
 
             return map;
 
             Exit:
 
-            List<sbyte> placeableNumbersList = Program.PlaceableNumbers(map, nX, nY);
+            List<sbyte> placeableNumbersList = Program.PlaceableNumbers(map, j, i);
 
             if (placeableNumbersList.Count == 0) return map;
 
-            foreach (sbyte i in placeableNumbersList)
+            foreach (sbyte p in placeableNumbersList)
             {
                 Board[,] nb = new Board[9, 9];
-                for (sbyte y = 0; y < 9; y++)
+                for (y = 0; y < 9; ++y)
                 {
-                    for (sbyte x = 0; x < 9; x++)
+                    for (x = 0; x < 9; ++x)
                     {
                         nb[y, x] = new Board(map[y, x].Number, map[y, x].IsPeculiar, true);
 
-                        if (y == nY && x == nX) nb[nY, nX].Number = i;
+                        if (y == i && x == j) nb[i, j].Number = p;
                     }
                 }
 
